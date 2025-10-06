@@ -2,7 +2,7 @@
 
 describe('Tutor Subscription Flow', () => {
   beforeEach(() => {
-    cy.visit('/tutors');
+    cy.visit('/tutores');
   });
 
   it('should allow tutor to subscribe successfully (happy path)', () => {

@@ -27,7 +27,7 @@ export default function Home(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* Tutors Path */}
             <Link
-              href="/tutors"
+              href="/tutores"
               className="group flex flex-col items-center justify-center p-8 md:p-12 rounded-lg border-2 border-primary/20 hover:border-primary/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
               <h2 className="text-2xl md:text-3xl font-heading mb-3">

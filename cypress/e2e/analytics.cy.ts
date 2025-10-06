@@ -16,8 +16,8 @@ describe('Google Analytics Integration', () => {
     cy.visit('/');
     cy.get('script[src*="googletagmanager.com/gtag/js"]').should('exist');
 
-    // Test tutors page
-    cy.visit('/tutors');
+    // Test tutores page
+    cy.visit('/tutores');
     cy.get('script[src*="googletagmanager.com/gtag/js"]').should('exist');
   });
 });
