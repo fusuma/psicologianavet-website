@@ -116,15 +116,8 @@ describe('Vet Subscription Flow', () => {
     // Inject axe for accessibility testing
     cy.injectAxe();
 
-    // Check for a11y violations on the page, log them if any
-    cy.checkA11y(null, null, (violations) => {
-      cy.log(`Found ${violations.length} accessibility violations`);
-      violations.forEach((violation) => {
-        cy.log(`${violation.id}: ${violation.description}`);
-        cy.log(`Impact: ${violation.impact}`);
-        cy.log(`Help: ${violation.help}`);
-      });
-    });
+    // Check for a11y violations on the page
+    cy.checkA11y();
   });
 
   it('should be keyboard accessible', () => {
