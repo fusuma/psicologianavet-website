@@ -57,6 +57,17 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  /* Project-specific theme classes */
+  .theme-dark {
+    --background: 250 37% 12%; /* Primary Dark: #191723 */
+    --foreground: 181 60% 37%; /* Primary Green: #269A9B */
+  }
+
+  .theme-green {
+    --background: 181 60% 37%; /* Primary Green: #269A9B */
+    --foreground: 250 37% 12%; /* Primary Dark: #191723 */
+  }
 }
 
 @layer base {

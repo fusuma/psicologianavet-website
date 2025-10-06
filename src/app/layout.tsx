@@ -1,6 +1,21 @@
 import type { Metadata } from 'next'
 import type { ReactNode, ReactElement } from 'react'
+import { Fira_Sans, Castoro } from 'next/font/google'
 import './globals.css'
+
+const firaSans = Fira_Sans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-fira-sans',
+  display: 'swap',
+})
+
+const castoro = Castoro({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-castoro',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Quando um amor se vai',
@@ -14,7 +29,7 @@ export default function RootLayout({
 }): ReactElement {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body className={`${firaSans.variable} ${castoro.variable} font-sans`}>{children}</body>
     </html>
   )
 }
