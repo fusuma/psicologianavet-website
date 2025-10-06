@@ -1,0 +1,118 @@
+# Quality Gate Decision for Story 1.6
+schema: 1
+story: "1.6"
+story_title: "Implement End-to-End Sign-up Feature"
+gate: CONCERNS
+status_reason: "Implementation is code-complete and follows all standards, but E2E tests are failing due to Cypress port configuration mismatch (config expects port 3000, server runs on 3001). Test verification is blocked pending configuration fix."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-10-06T20:00:00Z"
+
+# Issues blocking PASS gate
+top_issues:
+  - id: "TEST-001"
+    severity: medium
+    finding: "Cypress baseUrl configuration mismatch - configured for port 3000, dev server runs on port 3001"
+    suggested_action: "Update cypress.config.ts baseUrl to 'http://localhost:3001' or configure Next.js to use port 3000"
+    suggested_owner: dev
+    refs: ["cypress.config.ts:5"]
+  - id: "TEST-002"
+    severity: medium
+    finding: "All 7 E2E tests failing due to port mismatch - cannot verify functionality end-to-end"
+    suggested_action: "Fix port configuration and re-run 'npm run cypress:run' to verify all tests pass"
+    suggested_owner: dev
+    refs: ["cypress/e2e/tutor-subscription.cy.ts"]
+  - id: "INT-001"
+    severity: low
+    finding: "Brevo API integration not tested with live credentials"
+    suggested_action: "Create .env.local with valid Brevo API credentials and manually test subscription flow"
+    suggested_owner: dev
+    refs: ["src/services/subscriptionService.ts"]
+
+waiver: { active: false }
+
+# Quality scoring
+quality_score: 75
+# Calculation: 100 - (10 × 2 medium CONCERNS) - (5 × 1 low CONCERN) = 75
+
+# Evidence collected during review
+evidence:
+  tests_reviewed: 7
+  risks_identified: 3
+  files_refactored: 2
+  trace:
+    ac_covered: [1, 2, 3, 5, 6, 7]
+    ac_gaps: [4, 8]  # AC4: Brevo not tested with live API; AC8: E2E tests failing
+
+# Non-Functional Requirements validation
+nfr_validation:
+  security:
+    status: PASS
+    notes: "Honeypot protection, server-side validation, no secret exposure, proper error handling. Recommend rate limiting for production."
+  performance:
+    status: PASS
+    notes: "Bundle size 125 kB (acceptable), build successful, no performance bottlenecks identified."
+  reliability:
+    status: CONCERNS
+    notes: "E2E tests failing due to configuration (not implementation). Manual testing required to verify reliability."
+  maintainability:
+    status: PASS
+    notes: "Clean architecture, comprehensive documentation, follows all coding standards, explicit types throughout."
+
+# Risk assessment summary
+risk_summary:
+  totals:
+    critical: 0
+    high: 0
+    medium: 2
+    low: 1
+  highest: medium
+  recommendations:
+    must_fix:
+      - action: "Fix Cypress port configuration to unblock test verification"
+        priority: P0
+        effort: "5 minutes"
+        refs: ["cypress.config.ts:5"]
+    monitor:
+      - action: "Test Brevo integration with live API credentials"
+        priority: P1
+        effort: "15 minutes"
+        refs: ["src/services/subscriptionService.ts"]
+
+# Actionable recommendations
+recommendations:
+  immediate:
+    - action: "Update cypress.config.ts baseUrl from 3000 to 3001"
+      refs: ["cypress.config.ts:5"]
+    - action: "Run 'npm run cypress:run' to verify all 7 tests pass"
+      refs: ["cypress/e2e/tutor-subscription.cy.ts"]
+  future:
+    - action: "Add unit tests for service layer (subscriptionService, apiClient)"
+      refs: ["src/services/subscriptionService.ts", "src/services/apiClient.ts"]
+    - action: "Implement rate limiting on /api/v1/subscribe endpoint"
+      refs: ["src/app/api/v1/subscribe/route.ts"]
+    - action: "Fix pre-existing ESLint configuration warnings"
+      refs: [".eslintrc.json"]
+
+# Review audit trail
+history:
+  - at: "2025-10-06T20:00:00Z"
+    gate: CONCERNS
+    note: "Initial QA review - Code quality excellent, tests failing due to config issue. Fixed accessibility violations and improved test selectors during review."
+
+# Additional context
+notes: |
+  Code quality is production-ready. Implementation demonstrates solid architecture with:
+  - Clean controller/service separation
+  - Type-safe Zod validation
+  - Comprehensive error handling
+  - Reusable component design
+  - Proper security measures (honeypot, server-side validation)
+
+  Refactoring performed during review:
+  1. Added ARIA landmark roles to Layout component (accessibility fix)
+  2. Improved Cypress test selectors for reliability
+
+  Gate set to CONCERNS solely due to test configuration blocking verification.
+  Estimated resolution time: 30 minutes (config fix + test run + Brevo test).
+
+  Recommendation: Fix port configuration and re-review, or accept CONCERNS gate with manual testing as mitigation.

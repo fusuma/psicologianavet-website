@@ -20,18 +20,20 @@ interface LayoutProps {
 export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement {
   return (
     <div className={cn(
-      'min-h-screen flex flex-col',
+      'min-h-screen flex flex-col bg-background text-foreground',
       theme === 'dark' ? 'theme-dark' : 'theme-green'
     )}>
-      <header className="w-full px-4 py-6 md:px-8 md:py-8">
-        {/* Placeholder for future navigation */}
+      <header className="w-full px-4 py-6 md:px-8 md:py-8" role="banner">
+        <nav role="navigation" aria-label="Main navigation">
+          {/* Placeholder for future navigation */}
+        </nav>
       </header>
 
-      <main className="flex-1 w-full px-4 py-8 md:px-8 md:py-12">
+      <main className="flex-1 w-full px-4 py-8 md:px-8 md:py-12" id="main-content">
         {children}
       </main>
 
-      <footer className="w-full px-4 py-6 md:px-8 md:py-8">
+      <footer className="w-full px-4 py-6 md:px-8 md:py-8" role="contentinfo">
         {/* Placeholder for future footer content */}
       </footer>
     </div>

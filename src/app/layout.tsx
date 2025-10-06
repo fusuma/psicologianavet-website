@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode, ReactElement } from 'react'
 import { Fira_Sans, Castoro } from 'next/font/google'
 import './globals.css'
+import { Analytics } from '@/components/composite/Analytics'
 
 const firaSans = Fira_Sans({
   subsets: ['latin'],
@@ -29,7 +30,10 @@ export default function RootLayout({
 }): ReactElement {
   return (
     <html lang="pt-BR">
-      <body className={`${firaSans.variable} ${castoro.variable} font-sans`}>{children}</body>
+      <body className={`${firaSans.variable} ${castoro.variable} font-sans`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
