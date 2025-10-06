@@ -56,6 +56,9 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     setSuccessMessage(null);
     setErrorMessage(null);
 
+    // Log what we're about to send
+    console.log('Submitting subscription data:', data);
+
     try {
       const response = await apiClient.subscribe(data);
 
