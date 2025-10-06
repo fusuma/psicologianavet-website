@@ -81,4 +81,8 @@
     font-family: var(--font-castoro), serif;
     text-transform: lowercase;
   }
+
+  .theme-dark h1 {
+    color: white;
+  }
 }
