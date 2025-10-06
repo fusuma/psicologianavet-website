@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactElement, useState } from 'react';
+import { type ReactElement, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { subscriptionPayloadSchema, type SubscriptionPayload } from '@/shared/schemas';
@@ -43,6 +43,11 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     },
   });
 
+  // Update listName when theme changes
+  useEffect(() => {
+    form.setValue('listName', listName);
+  }, [theme, listName, form]);
+
   /**
    * Handle form submission
    */
@@ -56,6 +61,9 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
 
       // Check if there's an error in the response
       if (response.error) {
+        // Log detailed error info for debugging
+        console.error('Subscription error:', response.error);
+
         // Handle specific error codes
         if (response.error.code === 'EMAIL_EXISTS') {
           setErrorMessage('Este e-mail já está cadastrado.');

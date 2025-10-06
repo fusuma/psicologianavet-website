@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { ZodError } from 'zod';
 import { subscribe, ValidationError, EmailExistsError } from '@/services/subscriptionService';
 import type { ApiResponse } from '@/shared/schemas';
 
@@ -15,6 +16,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Parse request body
     const body = await request.json();
 
+    // Log incoming request for debugging
+    console.log('Subscription request received:', JSON.stringify(body));
+
     // Call subscription service
     await subscribe(body);
 
@@ -26,6 +30,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(successResponse, { status: 200 });
   } catch (error: unknown) {
+    // Handle ZodError (schema validation failures)
+    if (error instanceof ZodError) {
+      console.error('Zod validation failed:', error.issues);
+      const errorResponse: ApiResponse<null> = {
+        data: null,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid request data',
+          details: error.issues,
+        },
+      };
+      return NextResponse.json(errorResponse, { status: 400 });
+    }
+
     // Handle ValidationError (includes honeypot detection)
     if (error instanceof ValidationError) {
       const errorResponse: ApiResponse<null> = {
