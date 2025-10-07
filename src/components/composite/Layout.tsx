@@ -1,4 +1,6 @@
 import type { ReactNode, ReactElement } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface LayoutProps {
@@ -24,8 +26,17 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
       theme === 'dark' ? 'theme-dark' : 'theme-green'
     )}>
       <header className="w-full px-4 py-6 md:px-8 md:py-8" role="banner">
-        <nav role="navigation" aria-label="Main navigation">
-          {/* Placeholder for future navigation */}
+        <nav className="flex justify-center" role="navigation" aria-label="Main navigation">
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Image
+              src="/images/psicologianavet.png"
+              alt="Psicologia na Vet"
+              width={200}
+              height={60}
+              className="h-12 w-auto md:h-14"
+              priority
+            />
+          </Link>
         </nav>
       </header>
 

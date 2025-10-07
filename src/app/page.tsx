@@ -1,7 +1,9 @@
 import type { ReactElement } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
+import { FloatingImages } from '@/components/composite/FloatingImages';
 
 export const metadata: Metadata = {
   title: 'Quando um amor se vai | Um espaço de acolhimento e memória',
@@ -11,12 +13,23 @@ export const metadata: Metadata = {
 export default function Home(): ReactElement {
   return (
     <Layout theme="dark">
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-12">
+      <div className="relative overflow-hidden">
+        <FloatingImages />
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-[60vh] space-y-12">
         {/* Hero Section */}
         <section className="text-center space-y-4 max-w-4xl px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading">
             Se hoje há dor, é porque ontem houve amor.
           </h1>
+          <div className="flex justify-center py-2">
+            <Image
+              src="/images/rope.png"
+              alt=""
+              width={80}
+              height={80}
+              className="h-4 w-auto opacity-100"
+            />
+          </div>
           <p className="text-lg md:text-xl text-muted-foreground">
             Um espaço de acolhimento e memória para honrar o vínculo que nunca se perde.
           </p>
@@ -52,6 +65,7 @@ export default function Home(): ReactElement {
             </Link>
           </div>
         </nav>
+        </div>
       </div>
     </Layout>
   );
