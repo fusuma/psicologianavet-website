@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
+import { FloatingImages } from '@/components/composite/FloatingImages';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -12,16 +13,29 @@ export const metadata: Metadata = {
 export default function VetsPage(): ReactElement {
   return (
     <Layout theme="green">
-      <main id="main-content">
-        <section className="flex flex-col items-center justify-center max-w-4xl mx-auto">
+      <div className="relative overflow-hidden">
+        <FloatingImages />
+        <main id="main-content" className="relative z-10">
+          <section className="flex flex-col items-center justify-center max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="w-full text-center mb-12 md:mb-16">
             <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
               Apoie seus Clientes nos Momentos Mais Delicados
             </h1>
+            <div className="flex justify-center py-2">
+              <Image
+                src="/images/rope.png"
+                alt=""
+                width={80}
+                height={80}
+                className="h-4 w-auto opacity-100"
+              />
+            </div>
+          </div>
 
-            <div className="w-full space-y-8 text-lg md:text-xl leading-relaxed">
-              <p className="text-white">
+          {/* Main Content */}
+          <div className="w-full space-y-8 text-lg md:text-xl leading-relaxed mb-16 md:mb-20">
+              <p className="text-white mb-12 md:mb-16">
                 Como veterinário, você testemunha diariamente o poder do vínculo humano-animal.
                 E quando chega o momento da despedida, seus clientes não precisam apenas de
                 cuidados médicos — eles precisam de <strong className="text-foreground">apoio emocional especializado</strong>.
@@ -64,7 +78,6 @@ export default function VetsPage(): ReactElement {
                   </p>
                 </div>
               </div>
-            </div>
           </div>
 
           {/* Lead Magnet Section */}
@@ -126,6 +139,7 @@ export default function VetsPage(): ReactElement {
           </footer>
         </section>
       </main>
+      </div>
     </Layout>
   );
 }

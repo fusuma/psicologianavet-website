@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
+import { FloatingImages } from '@/components/composite/FloatingImages';
 
 export const metadata: Metadata = {
   title: 'Para Tutores - Quando um amor se vai',
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
 export default function TutorsPage(): ReactElement {
   return (
     <Layout theme="dark">
-      <section className="flex flex-col items-center justify-center max-w-4xl mx-auto">
+      <div className="relative overflow-hidden">
+        <FloatingImages />
+        <section className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto">
         {/* Hero Section */}
         <div className="w-full text-center mb-12 md:mb-16">
           <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
@@ -92,6 +95,7 @@ export default function TutorsPage(): ReactElement {
           </div>
         </div>
       </section>
+      </div>
     </Layout>
   );
 }

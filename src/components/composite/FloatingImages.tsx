@@ -38,9 +38,6 @@ export function FloatingImages() {
   const y3 = useTransform(scrollYProgress, [0, 1], [0, -180]);
   const y4 = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
-  // Scroll-triggered fade and scale
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.3, 0.25, 0.2, 0.1]);
-
   // Device orientation listener for mobile accelerometer
   useEffect(() => {
     let isActive = true;
@@ -99,10 +96,9 @@ export function FloatingImages() {
     <>
       {/* Ball - Upper Right */}
       <motion.div
-        className="absolute top-[25%] right-[5%] z-0 pointer-events-none"
+        className="absolute top-[25%] right-[5%] z-0 pointer-events-none opacity-30"
         style={{
           y: y1,
-          opacity,
           x: useTransform(smoothX, (x) => x * -0.8),
         }}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -122,10 +118,9 @@ export function FloatingImages() {
 
       {/* Mice - Middle Left */}
       <motion.div
-        className="absolute top-[50%] left-[8%] z-0 pointer-events-none"
+        className="absolute top-[50%] left-[8%] z-0 pointer-events-none opacity-25"
         style={{
           y: y3,
-          opacity,
           x: useTransform(smoothX, (x) => x * 0.7),
         }}
         initial={{ opacity: 0, x: -50 }}
@@ -145,10 +140,9 @@ export function FloatingImages() {
 
       {/* Heart - Bottom Left */}
       <motion.div
-        className="absolute top-[90%] left-[5%] z-0 pointer-events-none"
+        className="absolute top-[90%] left-[5%] z-0 pointer-events-none opacity-25"
         style={{
           y: y2,
-          opacity,
           x: useTransform(smoothX, (x) => x * 0.6),
         }}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -168,10 +162,9 @@ export function FloatingImages() {
 
       {/* Bone - Bottom Right */}
       <motion.div
-        className="absolute top-[75%] right-[8%] z-0 pointer-events-none"
+        className="absolute top-[75%] right-[8%] z-0 pointer-events-none opacity-20"
         style={{
           y: y4,
-          opacity,
           x: useTransform(smoothX, (x) => x * -0.9),
         }}
         initial={{ opacity: 0, scale: 0.8 }}

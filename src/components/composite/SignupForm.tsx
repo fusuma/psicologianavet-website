@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ShineBorder } from '@/registry/magicui/shine-border';
 
 interface SignupFormProps {
   /**
@@ -93,13 +94,20 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
   };
 
   return (
-    <div
-      className={cn(
-        'w-full max-w-md mx-auto p-6 rounded-lg',
-        theme === 'dark' ? 'bg-[#191723] text-white' : 'bg-[#269A9B] text-white'
-      )}
+    <ShineBorder
+      borderRadius={8}
+      borderWidth={2}
+      duration={14}
+      color={['#269A9B', '#1f7d7e', '#269A9B']}
+      className="w-full max-w-md mx-auto"
     >
-      <Form {...form}>
+      <div
+        className={cn(
+          'w-full p-6 rounded-lg',
+          theme === 'dark' ? 'bg-[#191723] text-white' : 'bg-[#269A9B] text-white'
+        )}
+      >
+        <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Email Input Field */}
           <FormField
@@ -112,7 +120,11 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
                   <Input
                     type="email"
                     placeholder="seu@email.com"
-                    className="bg-white text-gray-900"
+                    className={cn(
+                      theme === 'dark'
+                        ? 'bg-[#2a2438] text-white border-[#3d3750] placeholder:text-gray-400'
+                        : 'bg-[#1f7d7e] text-white border-[#1a6768] placeholder:text-gray-300'
+                    )}
                     aria-required="true"
                     {...field}
                   />
@@ -151,10 +163,10 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
             type="submit"
             disabled={isLoading}
             className={cn(
-              'w-full font-bold',
+              'w-full font-bold transition-colors',
               theme === 'dark'
-                ? 'bg-[#269A9B] hover:bg-[#1f7d7e] text-white'
-                : 'bg-[#191723] hover:bg-[#2a2438] text-white'
+                ? 'bg-[#269A9B] hover:bg-[#1f7d7e] text-[hsl(181,57.28%,37.22%)] hover:text-[hsl(181,57.28%,47.22%)]'
+                : 'bg-[#191723] hover:bg-[#2a2438] text-[hsl(181,57.28%,37.22%)] hover:text-[hsl(181,57.28%,47.22%)]'
             )}
           >
             {isLoading
@@ -187,6 +199,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
           )}
         </form>
       </Form>
-    </div>
+      </div>
+    </ShineBorder>
   );
 }
