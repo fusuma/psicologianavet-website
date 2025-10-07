@@ -61,12 +61,14 @@
   /* Project-specific theme classes */
   .theme-dark {
     --background: 250 37% 12%; /* Primary Dark: #191723 */
-    --foreground: 181 60% 37%; /* Primary Green: #269A9B */
+    --foreground: 181 100% 25.59%; /* Primary Green */
+    --foreground-hover: 181 85.74% 36.35%; /* Brighter Green for hover */
   }
 
   .theme-green {
-    --background: 181 60% 37%; /* Primary Green: #269A9B */
+    --background: 181 100% 25.59%; /* Primary Green */
     --foreground: 250 37% 12%; /* Primary Dark: #191723 */
+    --foreground-hover: 181 85.74% 36.35%; /* Brighter Green for hover */
   }
 }
 

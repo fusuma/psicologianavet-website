@@ -30,7 +30,7 @@ export default function Home(): ReactElement {
               className="h-4 w-auto opacity-100"
             />
           </div>
-          <p className="text-lg md:text-xl text-muted-foreground">
+          <p className="text-lg md:text-xl text-white">
             Um espaço de acolhimento e memória para honrar o vínculo que nunca se perde.
           </p>
         </section>
@@ -43,10 +43,10 @@ export default function Home(): ReactElement {
               href="/tutores"
               className="group flex flex-col items-center justify-center p-8 md:p-12 rounded-lg bg-black/20 border-2 border-primary/20 hover:border-primary/50 hover:bg-black/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
-              <h2 className="text-2xl md:text-3xl font-heading mb-3">
+              <h2 className="text-2xl md:text-3xl font-heading mb-3 transition-colors group-hover:[color:hsl(var(--foreground-hover))]">
                 Sou Tutor
               </h2>
-              <p className="text-sm md:text-base text-muted-foreground text-center">
+              <p className="text-sm md:text-base text-white text-center">
                 Para quem compartilha a vida com um animal de estimação
               </p>
             </Link>
@@ -56,10 +56,10 @@ export default function Home(): ReactElement {
               href="/vets"
               className="group flex flex-col items-center justify-center p-8 md:p-12 rounded-lg bg-black/20 border-2 border-primary/20 hover:border-primary/50 hover:bg-black/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
-              <h2 className="text-2xl md:text-3xl font-heading mb-3">
+              <h2 className="text-2xl md:text-3xl font-heading mb-3 transition-colors group-hover:[color:hsl(var(--foreground-hover))]">
                 Sou Parceiro Veterinário
               </h2>
-              <p className="text-sm md:text-base text-muted-foreground text-center">
+              <p className="text-sm md:text-base text-white text-center">
                 Para profissionais que cuidam de animais e seus tutores
               </p>
             </Link>
