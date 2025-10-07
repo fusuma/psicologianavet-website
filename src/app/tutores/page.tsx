@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
+import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
 
 export const metadata: Metadata = {
   title: 'Para Tutores - Quando um amor se vai',
@@ -58,15 +59,7 @@ export default function TutorsPage(): ReactElement {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="flex justify-center">
-              <Image
-                src="/images/cover.png"
-                alt="Capa do livro Quando um amor se vai"
-                width={300}
-                height={400}
-                className="rounded-lg shadow-xl"
-              />
-            </div>
+            <TiltingBookCover />
             <p className="text-white">
               "Quando um amor se vai" é um guia psicológico escrito por{' '}
               <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.

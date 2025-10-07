@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
+import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -42,15 +43,7 @@ export default function VetsPage(): ReactElement {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
-                <div className="flex justify-center">
-                  <Image
-                    src="/images/cover.png"
-                    alt="Capa do livro Quando um amor se vai"
-                    width={300}
-                    height={400}
-                    className="rounded-lg shadow-xl"
-                  />
-                </div>
+                <TiltingBookCover />
                 <div className="space-y-6 text-left">
                   <p className="text-white">
                     <strong>"Quando um amor se vai"</strong> é uma ferramenta psicológica criada para:
