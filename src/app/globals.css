@@ -61,14 +61,14 @@
   /* Project-specific theme classes */
   .theme-dark {
     --background: 250 37% 12%; /* Primary Dark: #191723 */
-    --foreground: 181 100% 25.59%; /* Primary Green */
-    --foreground-hover: 181 85.74% 36.35%; /* Brighter Green for hover */
+    --foreground: 181 57.28% 37.22%; /* Primary Green */
+    --foreground-hover: 181 57.28% 47.22%; /* Brighter Green for hover */
   }
 
   .theme-green {
-    --background: 181 100% 25.59%; /* Primary Green */
+    --background: 181 57.28% 37.22%; /* Primary Green */
     --foreground: 250 37% 12%; /* Primary Dark: #191723 */
-    --foreground-hover: 181 85.74% 36.35%; /* Brighter Green for hover */
+    --foreground-hover: 181 57.28% 47.22%; /* Brighter Green for hover */
   }
 }
 
@@ -86,5 +86,9 @@
 
   .theme-dark h1 {
     color: white;
+  }
+
+  .theme-green .text-white {
+    color: hsl(222, 47%, 11%); /* Dark blue */
   }
 }

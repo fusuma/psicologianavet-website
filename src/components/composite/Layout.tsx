@@ -30,7 +30,7 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
         <nav className="flex justify-center" role="navigation" aria-label="Main navigation">
           <Link href="/" className="transition-opacity hover:opacity-80">
             <Image
-              src="/images/psicologianavet.png"
+              src={theme === 'green' ? '/images/psicologianavet-light.png' : '/images/psicologianavet.png'}
               alt="Psicologia na Vet"
               width={200}
               height={60}

@@ -18,6 +18,15 @@ export default function TutorsPage(): ReactElement {
           <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
             Honre o Amor que Vocês Compartilharam
           </h1>
+          <div className="flex justify-center py-2">
+            <Image
+              src="/images/rope.png"
+              alt=""
+              width={80}
+              height={80}
+              className="h-4 w-auto opacity-100"
+            />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -46,10 +55,6 @@ export default function TutorsPage(): ReactElement {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <p className="text-white">
-              "Quando um amor se vai" é um guia psicológico escrito por{' '}
-              <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
-            </p>
             <div className="flex justify-center">
               <Image
                 src="/images/cover.png"
@@ -59,21 +64,29 @@ export default function TutorsPage(): ReactElement {
                 className="rounded-lg shadow-xl"
               />
             </div>
+            <p className="text-white">
+              "Quando um amor se vai" é um guia psicológico escrito por{' '}
+              <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
+            </p>
           </div>
         </div>
 
         {/* Lead Magnet Section */}
-        <div className="w-full mt-16 md:mt-20">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
-              📔 Receba Gratuitamente: Diário de Reflexão sobre seu Pet
-            </h2>
-            <p className="text-lg md:text-xl text-white">
-              Um presente especial para você começar a registrar as memórias, os momentos engraçados, e as lições que seu companheiro te ensinou.
-            </p>
-          </div>
+        <div className="w-full mt-16 md:mt-20 p-8 md:p-12 bg-black/20 rounded-lg border border-primary/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
+                Receba Gratuitamente: Diário de Reflexão sobre seu Pet
+              </h2>
+              <p className="text-lg md:text-xl text-white">
+                Um presente especial para você começar a registrar as memórias, os momentos engraçados, e as lições que seu companheiro te ensinou.
+              </p>
+            </div>
 
-          <SignupForm theme="dark" />
+            <div>
+              <SignupForm theme="dark" />
+            </div>
+          </div>
         </div>
       </section>
     </Layout>

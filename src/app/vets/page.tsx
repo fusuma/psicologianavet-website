@@ -56,20 +56,26 @@ export default function VetsPage(): ReactElement {
           </div>
 
           {/* Lead Magnet Section */}
-          <div className="w-full mt-16 md:mt-20">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
-                📄 Material Gratuito para sua Clínica:<br />
-                <strong>"Guia de Apoio ao Cliente Enlutado"</strong>
-              </h2>
-              <p className="text-lg md:text-xl text-white">
-                Um handout profissional e delicado que você pode entregar (físico ou digital) aos
-                tutores que enfrentam a perda de um pet. Discretamente assinado, este material
-                posiciona você como um parceiro empático.
-              </p>
-            </div>
+          <div className="w-full mt-16 md:mt-20 p-8 md:p-12 bg-white/10 rounded-lg border border-foreground/20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h6 className="text-base md:text-lg mb-2 text-foreground/80">
+                  Material Gratuito para sua Clínica
+                </h6>
+                <h3 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
+                  <strong>Guia de Apoio ao Cliente Enlutado</strong>
+                </h3>
+                <p className="text-lg md:text-xl text-white">
+                  Um handout profissional e delicado que você pode entregar (físico ou digital) aos
+                  tutores que enfrentam a perda de um pet. Discretamente assinado, este material
+                  posiciona você como um parceiro empático.
+                </p>
+              </div>
 
-            <SignupForm theme="green" />
+              <div>
+                <SignupForm theme="green" />
+              </div>
+            </div>
           </div>
 
           {/* Future Teaser Section */}
