@@ -89,8 +89,20 @@
     color: white;
   }
 
+  .theme-dark p,
+  .theme-dark li,
+  .theme-dark span {
+    font-weight: 200;
+  }
+
   .theme-green .text-white {
     color: hsl(222, 47%, 11%); /* Dark blue */
+  }
+
+  .theme-green p,
+  .theme-green li,
+  .theme-green span {
+    font-weight: 400;
   }
 
   .perspective-1000 {
