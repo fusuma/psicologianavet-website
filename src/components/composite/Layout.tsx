@@ -80,7 +80,12 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
             href="https://www.giseleschneider.com.br"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-muted-foreground transition-colors hover:[color:hsl(var(--foreground-hover))]"
+            className={cn(
+              "text-sm text-foreground font-semibold transition-colors",
+              theme === 'green'
+                ? "hover:[color:hsl(var(--foreground-link-hover))]"
+                : "hover:[color:hsl(var(--foreground-hover))]"
+            )}
           >
             Por Gisele Schneider
           </a>

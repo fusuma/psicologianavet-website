@@ -75,8 +75,11 @@ export default function TutorsPage(): ReactElement {
         <div className="w-full mt-16 md:mt-20 p-8 md:p-12 bg-black/20 rounded-lg border border-primary/20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
+              <h6 className="text-base md:text-lg mb-2 text-foreground/80">
+                Receba Gratuitamente
+              </h6>
               <h2 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
-                Receba Gratuitamente: Diário de Reflexão sobre seu Pet
+                <strong>Diário de Reflexão sobre seu Pet</strong>
               </h2>
               <p className="text-lg md:text-xl text-white">
                 Um presente especial para você começar a registrar as memórias, os momentos engraçados, e as lições que seu companheiro te ensinou.

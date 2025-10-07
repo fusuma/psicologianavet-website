@@ -6,7 +6,7 @@ import { Analytics } from '@/components/composite/Analytics'
 
 const firaSans = Fira_Sans({
   subsets: ['latin'],
-  weight: ['200'],
+  weight: ['200', '600'],
   variable: '--font-fira-sans',
   display: 'swap',
 })

@@ -69,6 +69,7 @@
     --background: 181 57.28% 37.22%; /* Primary Green */
     --foreground: 250 37% 12%; /* Primary Dark: #191723 */
     --foreground-hover: 181 57.28% 47.22%; /* Brighter Green for hover */
+    --foreground-link-hover: 250 37% 30%; /* Lighter Dark Blue for link hover */
   }
 }
 
