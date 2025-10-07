@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 
@@ -44,10 +45,21 @@ export default function TutorsPage(): ReactElement {
             </ul>
           </div>
 
-          <p className="text-white">
-            "Quando um amor se vai" é um guia psicológico escrito por{' '}
-            <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <p className="text-white">
+              "Quando um amor se vai" é um guia psicológico escrito por{' '}
+              <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
+            </p>
+            <div className="flex justify-center">
+              <Image
+                src="/images/cover.png"
+                alt="Capa do livro Quando um amor se vai"
+                width={300}
+                height={400}
+                className="rounded-lg shadow-xl"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Lead Magnet Section */}

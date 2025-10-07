@@ -136,9 +136,9 @@ export function FloatingImages() {
         <Image
           src="/images/mice.png"
           alt=""
-          width={160}
-          height={160}
-          className="w-26 h-26 md:w-36 md:h-36 lg:w-44 lg:h-44"
+          width={200}
+          height={200}
+          className="w-36 h-36 md:w-48 md:h-48 lg:w-60 lg:h-60"
           priority={false}
         />
       </motion.div>
@@ -182,9 +182,9 @@ export function FloatingImages() {
         <Image
           src="/images/bone.png"
           alt=""
-          width={170}
-          height={170}
-          className="w-28 h-28 md:w-38 md:h-38 lg:w-46 lg:h-46"
+          width={200}
+          height={200}
+          className="w-36 h-36 md:w-48 md:h-48 lg:w-60 lg:h-60"
           priority={false}
         />
       </motion.div>
