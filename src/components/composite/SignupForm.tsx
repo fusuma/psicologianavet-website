@@ -165,7 +165,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
             className={cn(
               'w-full font-bold transition-colors',
               theme === 'dark'
-                ? 'bg-[#269A9B] hover:bg-[#1f7d7e] text-[hsl(181,57.28%,37.22%)] hover:text-[hsl(181,57.28%,47.22%)]'
+                ? 'bg-[#269A9B] hover:bg-[#1f7d7e] text-[#191723] hover:text-[#2a2438]'
                 : 'bg-[#191723] hover:bg-[#2a2438] text-[hsl(181,57.28%,37.22%)] hover:text-[hsl(181,57.28%,47.22%)]'
             )}
           >
