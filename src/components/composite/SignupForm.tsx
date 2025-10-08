@@ -126,7 +126,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
       } else {
         // Success - message varies by theme/audience
         const message = theme === 'dark'
-          ? 'Obrigado! Verifique seu e-mail para baixar o diário gratuito.'
+          ? 'Obrigado! Verifique seu e-mail para baixar o mini caderno gratuito.'
           : 'Obrigado! Verifique seu e-mail para acessar o guia gratuito.';
         setSuccessMessage(message);
         form.reset();
@@ -299,7 +299,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
             {isLoading
               ? 'Enviando...'
               : theme === 'dark'
-              ? 'Baixar Diário Gratuito'
+              ? 'Baixar Mini Caderno'
               : 'Baixar Guia Gratuito'}
           </Button>
 
