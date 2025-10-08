@@ -67,7 +67,7 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
               <Youtube className="w-6 h-6" />
             </a>
             <a
-              href="https://wa.me/5511999999999"
+              href="https://wa.me/351925630104"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:[color:hsl(var(--foreground-hover))]"

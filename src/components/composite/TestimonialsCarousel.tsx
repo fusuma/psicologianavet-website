@@ -2,6 +2,7 @@
 
 import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Carousel,
@@ -19,36 +20,33 @@ interface Testimonial {
   name: string;
   role: string;
   testimonial: string;
+  image: string;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: 'Dr. Roberto Silva',
-    role: 'Médico Veterinário',
+    name: 'Dra. Daniela Rosa',
+    role: 'Médica Veterinária',
     testimonial:
       'Ter um recurso psicológico para indicar aos meus clientes fez toda a diferença. Muitos agradecem o cuidado além do consultório.',
+    image: '/images/testimonial-1.png',
   },
   {
     id: 2,
-    name: 'Dra. Ana Paula Costa',
-    role: 'Médica Veterinária',
+    name: 'Dr. Victor Goulart Pires',
+    role: 'Médico Veterinário',
     testimonial:
       'Este material me ajudou a oferecer um suporte mais completo nos momentos mais difíceis. Meus clientes se sentem mais acolhidos e compreendidos.',
+    image: '/images/testimonial-2.png',
   },
   {
     id: 3,
-    name: 'Dr. Carlos Mendes',
-    role: 'Médico Veterinário',
-    testimonial:
-      'Finalmente um recurso profissional que aborda o luto pet com a seriedade e delicadeza que merece. Recomendo a todos os tutores que atendo.',
-  },
-  {
-    id: 4,
-    name: 'Dra. Mariana Oliveira',
+    name: 'Dra. Mariana Santos Pereira',
     role: 'Médica Veterinária',
     testimonial:
-      'O guia se tornou parte essencial do meu protocolo de cuidado compassivo. Os tutores sempre comentam o quanto se sentiram apoiados.',
+      'Finalmente um recurso profissional que aborda o luto pet com a seriedade e delicadeza que merece. Recomendo a todos os tutores que atendo.',
+    image: '/images/testimonial-3.png',
   },
 ];
 
@@ -68,22 +66,14 @@ function TestimonialCard({
   return (
     <div className="mb-8 bg-white/10 border border-foreground/20 rounded-xl py-8 px-6 sm:py-6">
       <div className="flex items-center justify-between gap-20">
-        <div className="hidden lg:block relative shrink-0 aspect-3/4 max-w-[18rem] w-full bg-foreground/10 rounded-xl">
-          <div className="absolute top-1/4 right-0 translate-x-1/2 h-12 w-12 bg-foreground rounded-full flex items-center justify-center">
-            <svg
-              width="102"
-              height="102"
-              viewBox="0 0 102 102"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-            >
-              <path
-                d="M26.0063 19.8917C30.0826 19.8625 33.7081 20.9066 36.8826 23.024C40.057 25.1414 42.5746 28.0279 44.4353 31.6835C46.2959 35.339 47.2423 39.4088 47.2744 43.8927C47.327 51.2301 44.9837 58.4318 40.2444 65.4978C35.4039 72.6664 28.5671 78.5755 19.734 83.2249L2.54766 74.1759C8.33598 71.2808 13.2548 67.9334 17.3041 64.1335C21.2515 60.3344 23.9203 55.8821 25.3105 50.7765C20.5179 50.4031 16.6348 48.9532 13.6612 46.4267C10.5864 44.0028 9.03329 40.5999 9.00188 36.2178C8.97047 31.8358 10.5227 28.0029 13.6584 24.7192C16.693 21.5381 20.809 19.9289 26.0063 19.8917ZM77.0623 19.5257C81.1387 19.4965 84.7641 20.5406 87.9386 22.6581C91.1131 24.7755 93.6306 27.662 95.4913 31.3175C97.3519 34.9731 98.2983 39.0428 98.3304 43.5268C98.383 50.8642 96.0397 58.0659 91.3004 65.1319C86.4599 72.3005 79.6231 78.2095 70.79 82.859L53.6037 73.8099C59.392 70.9149 64.3108 67.5674 68.3601 63.7676C72.3075 59.9685 74.9763 55.5161 76.3665 50.4105C71.5739 50.0372 67.6908 48.5873 64.7172 46.0608C61.6424 43.6369 60.0893 40.2339 60.0579 35.8519C60.0265 31.4698 61.5787 27.6369 64.7145 24.3532C67.7491 21.1722 71.865 19.563 77.0623 19.5257Z"
-                className="fill-background"
-              />
-            </svg>
-          </div>
+        <div className="hidden lg:block relative shrink-0 aspect-3/4 max-w-[18rem] w-full h-[24rem] rounded-xl overflow-hidden">
+          <Image
+            src={testimonial.image}
+            alt={testimonial.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 0px, 288px"
+          />
         </div>
         <div className="flex flex-col justify-center">
           <div className="flex items-center justify-between gap-1">
@@ -101,14 +91,14 @@ function TestimonialCard({
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <StarIcon className="w-5 h-5 fill-foreground stroke-foreground" />
-              <StarIcon className="w-5 h-5 fill-foreground stroke-foreground" />
-              <StarIcon className="w-5 h-5 fill-foreground stroke-foreground" />
-              <StarIcon className="w-5 h-5 fill-foreground stroke-foreground" />
-              <StarIcon className="w-5 h-5 fill-foreground stroke-foreground" />
+              <StarIcon className="w-5 h-5 fill-yellow-400 stroke-yellow-400" />
+              <StarIcon className="w-5 h-5 fill-yellow-400 stroke-yellow-400" />
+              <StarIcon className="w-5 h-5 fill-yellow-400 stroke-yellow-400" />
+              <StarIcon className="w-5 h-5 fill-yellow-400 stroke-yellow-400" />
+              <StarIcon className="w-5 h-5 fill-yellow-400 stroke-yellow-400" />
             </div>
           </div>
-          <p className="mt-6 text-lg sm:text-2xl lg:text-[1.75rem] xl:text-3xl leading-normal lg:leading-normal font-semibold tracking-tight text-white">
+          <p className="mt-6 text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed font-sans font-normal tracking-tight text-white">
             &ldquo;{testimonial.testimonial}&rdquo;
           </p>
           <div className="flex sm:hidden md:flex mt-6 items-center gap-4">
@@ -153,10 +143,10 @@ export function TestimonialsCarousel(): ReactElement {
       <div className="w-full">
         <div className="mb-8">
           <h6 className="text-base md:text-lg mb-2 text-foreground/80 text-center">
-            Material Gratuito para sua Clínica
+            O que dizem nossos parceiros
           </h6>
           <h3 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground text-center">
-            <strong>Apoio para Momentos Difíceis</strong>
+            <strong>Veterinários que Recomendam</strong>
           </h3>
         </div>
         <div className="w-full mx-auto px-0 md:px-12">
@@ -168,8 +158,8 @@ export function TestimonialsCarousel(): ReactElement {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="text-foreground hover:text-foreground/80" />
-            <CarouselNext className="text-foreground hover:text-foreground/80" />
+            <CarouselPrevious className="bg-[#191723] text-[#269A9B] hover:bg-[#191723] hover:text-[#ffffff] border-[#191723]" />
+            <CarouselNext className="bg-[#191723] text-[#269A9B] hover:bg-[#191723]  hover:text-[#ffffff] border-[#191723]" />
           </Carousel>
           <div className="flex items-center justify-center gap-2 mt-4">
             {Array.from({ length: count }).map((_, index) => (

@@ -117,7 +117,7 @@ export default function VetsPage(): ReactElement {
               className="bg-foreground hover:bg-foreground/90 text-background font-semibold"
               asChild
             >
-              <Link href="https://wa.me/5511999999999?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Programa%20de%20Afiliados">
+              <Link href="https://wa.me/351925630104?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Programa%20de%20Afiliados">
                 Programa de Afiliados
               </Link>
             </Button>
