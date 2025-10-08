@@ -1,4 +1,5 @@
 import { PDFDocument, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -13,6 +14,14 @@ export async function personalizePDF(clinicName: string): Promise<Buffer> {
   // Load PDF document
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
+  // Register fontkit for custom font support
+  pdfDoc.registerFontkit(fontkit);
+
+  // Load Fira Sans Bold font
+  const fontPath = path.join(process.cwd(), 'public/fonts/FiraSans-Bold.ttf');
+  const fontBytes = await fs.readFile(fontPath);
+  const firaSansBold = await pdfDoc.embedFont(fontBytes);
+
   // Get the last page (page 7 where the clinic name appears)
   const pages = pdfDoc.getPages();
   const lastPage = pages[pages.length - 1];
@@ -22,27 +31,28 @@ export async function personalizePDF(clinicName: string): Promise<Buffer> {
 
   // Remove the existing "Clínica RosaVet" text by drawing a white rectangle over it
   // Position based on PDF layout (bottom center of page 7)
-  const textY = 145; // Distance from bottom
-  const textX = width / 2 - 85; // Centered
+  const textY = 135; // Distance from bottom (adjusted for larger font)
+  const fontSize = 40; // Bold 40px as requested
 
+  // Calculate exact text width using the actual font
+  const textWidth = firaSansBold.widthOfTextAtSize(clinicName, fontSize);
+  const centeredX = (width - textWidth) / 2;
+
+  // Draw larger white rectangle to cover original text
   lastPage.drawRectangle({
-    x: textX,
-    y: textY - 5,
-    width: 170,
-    height: 20,
+    x: centeredX - 10,
+    y: textY - 10,
+    width: textWidth + 20,
+    height: fontSize + 20,
     color: rgb(1, 1, 1), // White
   });
 
-  // Draw the new clinic name (centered)
-  const fontSize = 14;
-  const approxCharWidth = fontSize * 0.6;
-  const textWidth = clinicName.length * approxCharWidth;
-  const centeredX = (width - textWidth) / 2;
-
+  // Draw the new clinic name with Fira Sans Bold 40px
   lastPage.drawText(clinicName, {
     x: centeredX,
     y: textY,
     size: fontSize,
+    font: firaSansBold,
     color: rgb(0.2, 0.2, 0.2), // Dark gray
   });
 
@@ -63,8 +73,14 @@ export async function addWatermark(
   }
 ): Promise<Buffer> {
   const pdfDoc = await PDFDocument.load(pdfBytes);
-  const pages = pdfDoc.getPages();
 
+  // Register fontkit and load Fira Sans Regular for watermark
+  pdfDoc.registerFontkit(fontkit);
+  const fontPath = path.join(process.cwd(), 'public/fonts/FiraSans-Regular.ttf');
+  const fontBytes = await fs.readFile(fontPath);
+  const firaSansRegular = await pdfDoc.embedFont(fontBytes);
+
+  const pages = pdfDoc.getPages();
   const watermarkText = `${metadata.clinicName} | ${metadata.email} | ${metadata.date}`;
 
   pages.forEach((page) => {
@@ -75,6 +91,7 @@ export async function addWatermark(
       x: 50,
       y: 20,
       size: 7,
+      font: firaSansRegular,
       color: rgb(0.7, 0.7, 0.7),
       opacity: 0.5,
     });
