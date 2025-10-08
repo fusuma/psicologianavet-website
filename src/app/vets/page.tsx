@@ -5,6 +5,7 @@ import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
+import { TestimonialsCarousel } from '@/components/composite/TestimonialsCarousel';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -81,7 +82,7 @@ export default function VetsPage(): ReactElement {
                   Material Gratuito para sua Clínica
                 </h6>
                 <h3 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
-                  <strong>Guia de Apoio ao Cliente Enlutado</strong>
+                  <strong>Apoio para Momentos Difíceis</strong>
                 </h3>
                 <p className="text-lg md:text-xl text-white">
                   Um handout profissional e delicado que você pode entregar (físico ou digital) aos
@@ -106,13 +107,7 @@ export default function VetsPage(): ReactElement {
           </div>
 
           {/* Social Proof Section */}
-          <div className="w-full mt-16 md:mt-20 p-6 bg-white/10 rounded-lg">
-            <blockquote className="text-lg md:text-xl text-white italic">
-              "Ter um recurso psicológico para indicar aos meus clientes fez toda a diferença.
-              Muitos agradecem o cuidado além do consultório."
-            </blockquote>
-            <p className="text-white mt-4">— Dr. Roberto Silva, Médico Veterinário</p>
-          </div>
+          <TestimonialsCarousel />
 
           {/* Secondary CTA Section */}
           <div className="w-full mt-16 md:mt-20 text-center">
