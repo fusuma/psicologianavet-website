@@ -97,14 +97,7 @@ export default function VetsPage(): ReactElement {
             </div>
           </div>
 
-          {/* Future Teaser Section */}
-          <div className="w-full mt-16 md:mt-20 text-center">
-            <p className="text-lg md:text-xl text-white mb-4">
-              <strong className="text-foreground">Em breve:</strong> Ebook exclusivo para veterinários
-              sobre comunicação compassiva e autocuidado profissional.
-            </p>
-            <p className="text-white italic">[Quero ser avisado]</p>
-          </div>
+          
 
           {/* Social Proof Section */}
           <TestimonialsCarousel />
