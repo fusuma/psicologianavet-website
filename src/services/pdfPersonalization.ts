@@ -21,23 +21,28 @@ export async function personalizePDF(clinicName: string): Promise<Buffer> {
   const { width, height } = lastPage.getSize();
 
   // Remove the existing "Clínica RosaVet" text by drawing a white rectangle over it
-  // Approximate position based on PDF layout
-  const textY = 160; // Distance from bottom
-  const textX = width / 2 - 100; // Centered
+  // Position based on PDF layout (bottom center of page 7)
+  const textY = 145; // Distance from bottom
+  const textX = width / 2 - 85; // Centered
 
   lastPage.drawRectangle({
     x: textX,
     y: textY - 5,
-    width: 200,
-    height: 25,
+    width: 170,
+    height: 20,
     color: rgb(1, 1, 1), // White
   });
 
-  // Draw the new clinic name
+  // Draw the new clinic name (centered)
+  const fontSize = 14;
+  const approxCharWidth = fontSize * 0.6;
+  const textWidth = clinicName.length * approxCharWidth;
+  const centeredX = (width - textWidth) / 2;
+
   lastPage.drawText(clinicName, {
-    x: width / 2 - (clinicName.length * 4), // Rough centering
+    x: centeredX,
     y: textY,
-    size: 14,
+    size: fontSize,
     color: rgb(0.2, 0.2, 0.2), // Dark gray
   });
 
