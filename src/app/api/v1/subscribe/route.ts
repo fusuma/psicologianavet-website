@@ -71,7 +71,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Handle generic/unknown errors
-    // Never expose internal error details to client
+    // Log error details server-side for debugging (never expose to client)
+    console.error('Unexpected subscription error:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     const genericErrorResponse: ApiResponse<null> = {
       data: null,
       error: {

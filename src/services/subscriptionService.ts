@@ -24,6 +24,29 @@ export class EmailExistsError extends Error {
 }
 
 /**
+ * Validate required environment variables
+ */
+function validateEnvironment(): void {
+  const required = [
+    'BREVO_API_KEY',
+    'BREVO_TUTORS_LIST_ID',
+    'BREVO_VETS_LIST_ID',
+  ];
+
+  const missing = required.filter((key) => !process.env[key]);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}. ` +
+      'Please configure these in your Vercel project settings.'
+    );
+  }
+}
+
+// Validate environment on module load
+validateEnvironment();
+
+/**
  * Initialize Brevo API client with API key from environment.
  */
 const apiInstance = new brevo.ContactsApi();
