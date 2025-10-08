@@ -187,12 +187,22 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
   } catch (error: unknown) {
     // Handle Brevo API errors
     if (error && typeof error === 'object' && 'response' in error) {
-      const response = (error as { response?: { body?: { code?: string } } }).response;
+      const response = (error as { response?: { body?: { code?: string; message?: string } } }).response;
+
+      // Log detailed Brevo API error for debugging
+      console.error('Brevo API error:', {
+        code: response?.body?.code,
+        message: response?.body?.message,
+        fullResponse: JSON.stringify(response?.body),
+      });
 
       // Check if error is "duplicate_parameter" (contact already exists)
       if (response?.body?.code === 'duplicate_parameter') {
         throw new EmailExistsError('Email already subscribed');
       }
+
+      // Throw ValidationError for other Brevo API errors
+      throw new ValidationError(`Brevo API error: ${response?.body?.message || 'Unknown error'}`);
     }
 
     // Re-throw unknown errors
