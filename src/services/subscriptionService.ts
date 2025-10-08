@@ -199,24 +199,48 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
       hasMouseMovement: validated.hasMouseMovement,
     });
   } catch (error: unknown) {
+    // Log full error object to understand its structure
+    console.error('Raw Brevo error:', {
+      errorType: error?.constructor?.name,
+      hasResponse: error && typeof error === 'object' && 'response' in error,
+      errorKeys: error && typeof error === 'object' ? Object.keys(error) : [],
+      fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+    });
+
     // Handle Brevo API errors
     if (error && typeof error === 'object' && 'response' in error) {
-      const response = (error as { response?: { body?: { code?: string; message?: string } } }).response;
+      const axiosError = error as {
+        response?: {
+          status?: number;
+          statusText?: string;
+          data?: unknown;
+          body?: { code?: string; message?: string };
+        };
+      };
+
+      const response = axiosError.response;
 
       // Log detailed Brevo API error for debugging
-      console.error('Brevo API error:', {
-        code: response?.body?.code,
-        message: response?.body?.message,
-        fullResponse: JSON.stringify(response?.body),
+      console.error('Brevo API error details:', {
+        status: response?.status,
+        statusText: response?.statusText,
+        data: JSON.stringify(response?.data),
+        body: JSON.stringify(response?.body),
       });
 
       // Check if error is "duplicate_parameter" (contact already exists)
-      if (response?.body?.code === 'duplicate_parameter') {
+      const errorData = response?.data || response?.body;
+      const errorCode = (errorData as { code?: string })?.code;
+      const errorMessage = (errorData as { message?: string })?.message;
+
+      if (errorCode === 'duplicate_parameter') {
         throw new EmailExistsError('Email already subscribed');
       }
 
       // Throw ValidationError for other Brevo API errors
-      throw new ValidationError(`Brevo API error: ${response?.body?.message || 'Unknown error'}`);
+      throw new ValidationError(
+        `Brevo API error (${response?.status}): ${errorMessage || response?.statusText || 'Unknown error'}`
+      );
     }
 
     // Re-throw unknown errors
