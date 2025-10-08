@@ -52,7 +52,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
       company: '',
       // Temporal validation
       formLoadTime,
-      formSubmitTime: 0, // Will be set on submit
+      formSubmitTime: undefined, // Will be set on submit
       // Behavioral fingerprinting
       interactionCount: 0,
       hasFocusEvents: false,
@@ -77,6 +77,14 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     form.setValue('listName', listName);
   }, [theme, listName, form]);
 
+  // Update bot detection tracking fields in form state
+  useEffect(() => {
+    form.setValue('formLoadTime', formLoadTime);
+    form.setValue('interactionCount', interactionCount);
+    form.setValue('hasFocusEvents', hasFocusEvents);
+    form.setValue('hasMouseMovement', hasMouseMovement);
+  }, [form, formLoadTime, interactionCount, hasFocusEvents, hasMouseMovement]);
+
   /**
    * Handle form submission
    */
@@ -85,20 +93,18 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     setSuccessMessage(null);
     setErrorMessage(null);
 
+    // Set form submit time
+    const submitTime = Date.now();
+    form.setValue('formSubmitTime', submitTime);
+
     // Inject temporal and behavioral data before submission
     const enrichedData: SubscriptionPayload = {
       ...data,
-      formSubmitTime: Date.now(),
+      formSubmitTime: submitTime,
       interactionCount,
       hasFocusEvents,
       hasMouseMovement,
     };
-
-    // Log what we're about to send (for debugging)
-    console.log('Submitting subscription data:', {
-      ...enrichedData,
-      timeTaken: enrichedData.formSubmitTime - enrichedData.formLoadTime,
-    });
 
     try {
       const response = await apiClient.subscribe(enrichedData);
@@ -148,7 +154,15 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
         )}
       >
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(
+            onSubmit,
+            (errors) => {
+              console.error('❌ Form validation errors:', errors);
+            }
+          )}
+          className="space-y-4"
+        >
           {/* Email Input Field */}
           <FormField
             control={form.control}
@@ -235,11 +249,41 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
           />
 
           {/* Hidden tracking fields */}
-          <input type="hidden" {...form.register('formLoadTime')} />
-          <input type="hidden" {...form.register('formSubmitTime')} />
-          <input type="hidden" {...form.register('interactionCount')} />
-          <input type="hidden" {...form.register('hasFocusEvents')} />
-          <input type="hidden" {...form.register('hasMouseMovement')} />
+          <FormField
+            control={form.control}
+            name="formLoadTime"
+            render={({ field }) => (
+              <input type="hidden" {...field} />
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="formSubmitTime"
+            render={({ field }) => (
+              <input type="hidden" {...field} />
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="interactionCount"
+            render={({ field }) => (
+              <input type="hidden" {...field} />
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="hasFocusEvents"
+            render={({ field }) => (
+              <input type="hidden" {...field} value={field.value ? 'true' : 'false'} onChange={() => {}} />
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="hasMouseMovement"
+            render={({ field }) => (
+              <input type="hidden" {...field} value={field.value ? 'true' : 'false'} onChange={() => {}} />
+            )}
+          />
 
           {/* Submit Button */}
           <Button

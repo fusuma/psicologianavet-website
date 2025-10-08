@@ -16,7 +16,7 @@ export const subscriptionPayloadSchema = z.object({
 
   // Layer 2: Temporal validation
   formLoadTime: z.number().int().positive(), // Unix timestamp when form loaded
-  formSubmitTime: z.number().int().positive(), // Unix timestamp when submitted
+  formSubmitTime: z.number().int().positive().optional(), // Unix timestamp when submitted (set at submit time)
 
   // Layer 3: Behavioral fingerprinting
   interactionCount: z.number().int().min(0), // Number of user interactions
