@@ -96,7 +96,7 @@ export function FloatingImages() {
     <>
       {/* Ball - Upper Right */}
       <motion.div
-        className="absolute top-[25%] right-[5%] z-0 pointer-events-none opacity-30"
+        className="absolute top-[25%] right-[1%] z-0 pointer-events-none opacity-30"
         style={{
           y: y1,
           x: useTransform(smoothX, (x) => x * -0.8),
@@ -111,14 +111,14 @@ export function FloatingImages() {
           alt=""
           width={200}
           height={200}
-          className="w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56"
+          className="w-40 h-40 md:w-64 md:h-64 lg:w-80 lg:h-80"
           priority={false}
         />
       </motion.div>
 
       {/* Mice - Middle Left */}
       <motion.div
-        className="absolute top-[50%] left-[8%] z-0 pointer-events-none opacity-25"
+        className="absolute top-[50%] left-[1%] z-0 pointer-events-none opacity-25"
         style={{
           y: y3,
           x: useTransform(smoothX, (x) => x * 0.7),
@@ -133,14 +133,14 @@ export function FloatingImages() {
           alt=""
           width={200}
           height={200}
-          className="w-36 h-36 md:w-48 md:h-48 lg:w-60 lg:h-60"
+          className="w-44 h-44 md:w-64 md:h-64 lg:w-96 lg:h-96"
           priority={false}
         />
       </motion.div>
 
       {/* Heart - Bottom Left */}
       <motion.div
-        className="absolute top-[90%] left-[5%] z-0 pointer-events-none opacity-25"
+        className="absolute top-[90%] left-[1%] z-0 pointer-events-none opacity-25"
         style={{
           y: y2,
           x: useTransform(smoothX, (x) => x * 0.6),
@@ -155,14 +155,14 @@ export function FloatingImages() {
           alt=""
           width={180}
           height={180}
-          className="w-28 h-28 md:w-40 md:h-40 lg:w-48 lg:h-48"
+          className="w-36 h-36 md:w-56 md:h-56 lg:w-72 lg:h-72"
           priority={false}
         />
       </motion.div>
 
       {/* Bone - Bottom Right */}
       <motion.div
-        className="absolute top-[75%] right-[8%] z-0 pointer-events-none opacity-20"
+        className="absolute top-[75%] right-[1%] z-0 pointer-events-none opacity-20"
         style={{
           y: y4,
           x: useTransform(smoothX, (x) => x * -0.9),
@@ -177,7 +177,7 @@ export function FloatingImages() {
           alt=""
           width={200}
           height={200}
-          className="w-36 h-36 md:w-48 md:h-48 lg:w-60 lg:h-60"
+          className="w-44 h-44 md:w-64 md:h-64 lg:w-96 lg:h-96"
           priority={false}
         />
       </motion.div>

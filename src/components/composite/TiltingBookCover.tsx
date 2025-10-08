@@ -53,9 +53,6 @@ export function TiltingBookCover() {
         style={{
           transformStyle: 'preserve-3d',
         }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
         whileHover={{ scale: 1.05 }}
         className="cursor-pointer"
       >
