@@ -40,3 +40,6 @@ node_modules
 # cypress
 cypress/screenshots
 cypress/videos
+
+# personalized PDFs (generated, not committed)
+public/assets/personalized-*.pdf
