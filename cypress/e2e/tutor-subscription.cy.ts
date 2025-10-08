@@ -70,8 +70,9 @@ describe('Tutor Subscription Flow', () => {
     // Fill in the email field
     cy.contains('label', /e-mail/i).parent().find('input[type="email"]').type('bot@example.com');
 
-    // Programmatically fill the honeypot field (bots would do this)
-    cy.get('input[type="text"].sr-only').invoke('val', 'I am a bot').trigger('change');
+    // Programmatically fill one of the honeypot fields (bots would do this)
+    // The honeypot fields are now named 'website', 'phone', 'company'
+    cy.get('input[name="website"]').invoke('val', 'http://spam.com').trigger('change');
 
     // Submit the form
     cy.contains('button[type="submit"]', /baixar diário/i).click();

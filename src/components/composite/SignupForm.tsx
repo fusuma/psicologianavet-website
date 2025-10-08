@@ -31,6 +31,12 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Bot detection tracking state
+  const [formLoadTime] = useState<number>(() => Date.now());
+  const [interactionCount, setInteractionCount] = useState<number>(0);
+  const [hasFocusEvents, setHasFocusEvents] = useState<boolean>(false);
+  const [hasMouseMovement, setHasMouseMovement] = useState<boolean>(false);
+
   // Derive listName from theme prop
   const listName = theme === 'dark' ? 'tutors' : 'vets';
 
@@ -40,9 +46,31 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     defaultValues: {
       email: '',
       listName,
-      honeypot: '',
+      // Honeypot fields (should remain empty)
+      website: '',
+      phone: '',
+      company: '',
+      // Temporal validation
+      formLoadTime,
+      formSubmitTime: 0, // Will be set on submit
+      // Behavioral fingerprinting
+      interactionCount: 0,
+      hasFocusEvents: false,
+      hasMouseMovement: false,
     },
   });
+
+  // Track mouse movement (bot detection)
+  useEffect(() => {
+    const handleMouseMove = () => {
+      if (!hasMouseMovement) {
+        setHasMouseMovement(true);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [hasMouseMovement]);
 
   // Update listName when theme changes
   useEffect(() => {
@@ -57,11 +85,23 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     setSuccessMessage(null);
     setErrorMessage(null);
 
-    // Log what we're about to send
-    console.log('Submitting subscription data:', data);
+    // Inject temporal and behavioral data before submission
+    const enrichedData: SubscriptionPayload = {
+      ...data,
+      formSubmitTime: Date.now(),
+      interactionCount,
+      hasFocusEvents,
+      hasMouseMovement,
+    };
+
+    // Log what we're about to send (for debugging)
+    console.log('Submitting subscription data:', {
+      ...enrichedData,
+      timeTaken: enrichedData.formSubmitTime - enrichedData.formLoadTime,
+    });
 
     try {
-      const response = await apiClient.subscribe(data);
+      const response = await apiClient.subscribe(enrichedData);
 
       // Check if there's an error in the response
       if (response.error) {
@@ -127,6 +167,14 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
                     )}
                     aria-required="true"
                     {...field}
+                    onFocus={() => {
+                      setHasFocusEvents(true);
+                      setInteractionCount(prev => prev + 1);
+                    }}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setInteractionCount(prev => prev + 1);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -134,20 +182,48 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
             )}
           />
 
-          {/* Hidden Honeypot Field (Bot Protection) */}
-          <FormField
-            control={form.control}
-            name="honeypot"
-            render={({ field }) => (
-              <input
-                type="text"
-                className="sr-only"
-                tabIndex={-1}
-                autoComplete="off"
-                {...field}
-              />
-            )}
-          />
+          {/* Honeypot Fields (Bot Protection) - These should remain invisible and empty */}
+          <div style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
+            <FormField
+              control={form.control}
+              name="website"
+              render={({ field }) => (
+                <input
+                  type="text"
+                  placeholder="Your website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  {...field}
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <input
+                  type="tel"
+                  placeholder="Your phone"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  {...field}
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <input
+                  type="text"
+                  placeholder="Company name"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  {...field}
+                />
+              )}
+            />
+          </div>
 
           {/* Hidden List Name Field */}
           <FormField
@@ -157,6 +233,13 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
               <input type="hidden" {...field} />
             )}
           />
+
+          {/* Hidden tracking fields */}
+          <input type="hidden" {...form.register('formLoadTime')} />
+          <input type="hidden" {...form.register('formSubmitTime')} />
+          <input type="hidden" {...form.register('interactionCount')} />
+          <input type="hidden" {...form.register('hasFocusEvents')} />
+          <input type="hidden" {...form.register('hasMouseMovement')} />
 
           {/* Submit Button */}
           <Button

@@ -1,5 +1,7 @@
 import * as brevo from '@getbrevo/brevo';
 import { subscriptionPayloadSchema, type SubscriptionPayload } from '@/shared/schemas';
+import { getBotDetectionConfig, BotDetectionReason } from '@/config/botDetection';
+import { logBotDetection, logLegitimateSubmission } from '@/utils/botDetectionLogger';
 
 /**
  * Custom error for validation failures (including honeypot detection).
@@ -43,16 +45,84 @@ const listIdMap: Record<'tutors' | 'vets', string> = {
  *
  * @param payload - The subscription data including email and list name
  * @returns A promise that resolves when subscription is successful
- * @throws {ValidationError} If the payload is invalid or honeypot is filled
+ * @throws {ValidationError} If the payload is invalid or bot detected
  * @throws {EmailExistsError} If the email is already subscribed
  */
 export async function subscribe(payload: SubscriptionPayload): Promise<void> {
+  // Get current bot detection configuration
+  const config = getBotDetectionConfig();
+
   // Validate payload using Zod schema
   const validated = subscriptionPayloadSchema.parse(payload);
 
-  // Check honeypot field - if filled, reject as bot submission
-  if (validated.honeypot && validated.honeypot.length > 0) {
-    throw new ValidationError('Bot submission detected');
+  // Layer 1: Check honeypot fields - if any are filled, reject as bot
+  if (config.honeypot.enabled) {
+    if (
+      (validated.website && validated.website.length > 0) ||
+      (validated.phone && validated.phone.length > 0) ||
+      (validated.company && validated.company.length > 0)
+    ) {
+      logBotDetection(
+        BotDetectionReason.HONEYPOT_FILLED,
+        {
+          website: validated.website?.length || 0,
+          phone: validated.phone?.length || 0,
+          company: validated.company?.length || 0,
+        },
+        validated.email
+      );
+      throw new ValidationError('Bot submission detected');
+    }
+  }
+
+  // Layer 2: Temporal validation - check submission speed
+  const timeTaken = validated.formSubmitTime - validated.formLoadTime;
+
+  if (timeTaken < config.temporal.minFormTimeMs) {
+    logBotDetection(
+      BotDetectionReason.TOO_FAST,
+      {
+        timeTaken,
+        threshold: config.temporal.minFormTimeMs,
+      },
+      validated.email
+    );
+    throw new ValidationError('Form submitted too quickly');
+  }
+
+  if (timeTaken > config.temporal.maxFormTimeMs) {
+    logBotDetection(
+      BotDetectionReason.TOO_SLOW,
+      {
+        timeTaken,
+        threshold: config.temporal.maxFormTimeMs,
+      },
+      validated.email
+    );
+    throw new ValidationError('Form session expired');
+  }
+
+  // Layer 3: Behavioral validation - check for human-like interaction
+  if (config.behavioral.requireFocusEvents && !validated.hasFocusEvents) {
+    logBotDetection(BotDetectionReason.NO_FOCUS_EVENTS, {}, validated.email);
+    throw new ValidationError('Invalid interaction pattern');
+  }
+
+  if (validated.interactionCount < config.behavioral.minInteractionCount) {
+    logBotDetection(
+      BotDetectionReason.INSUFFICIENT_INTERACTIONS,
+      {
+        count: validated.interactionCount,
+        threshold: config.behavioral.minInteractionCount,
+      },
+      validated.email
+    );
+    throw new ValidationError('Invalid interaction pattern');
+  }
+
+  if (config.behavioral.requireMouseMovement && !validated.hasMouseMovement) {
+    logBotDetection(BotDetectionReason.NO_MOUSE_MOVEMENT, {}, validated.email);
+    throw new ValidationError('Invalid interaction pattern');
   }
 
   // Map list name to Brevo list ID
@@ -68,6 +138,16 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
 
   try {
     await apiInstance.createContact(createContact);
+
+    // Log successful (legitimate) submission
+    logLegitimateSubmission({
+      email: validated.email,
+      listName: validated.listName,
+      timeTaken,
+      interactionCount: validated.interactionCount,
+      hasFocusEvents: validated.hasFocusEvents,
+      hasMouseMovement: validated.hasMouseMovement,
+    });
   } catch (error: unknown) {
     // Handle Brevo API errors
     if (error && typeof error === 'object' && 'response' in error) {

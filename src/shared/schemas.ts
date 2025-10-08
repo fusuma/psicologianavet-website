@@ -7,7 +7,21 @@ import { z } from 'zod';
 export const subscriptionPayloadSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   listName: z.enum(['tutors', 'vets']),
-  honeypot: z.string().max(0, { message: "Bot submission detected." }).optional(),
+
+  // Multi-layer bot detection fields
+  // Layer 1: Decoy fields (should remain empty)
+  website: z.string().max(0).optional(), // Primary honeypot
+  phone: z.string().max(0).optional(),   // Secondary honeypot
+  company: z.string().max(0).optional(), // Tertiary honeypot
+
+  // Layer 2: Temporal validation
+  formLoadTime: z.number().int().positive(), // Unix timestamp when form loaded
+  formSubmitTime: z.number().int().positive(), // Unix timestamp when submitted
+
+  // Layer 3: Behavioral fingerprinting
+  interactionCount: z.number().int().min(0), // Number of user interactions
+  hasFocusEvents: z.boolean(), // Did user focus on email field?
+  hasMouseMovement: z.boolean(), // Was mouse movement detected?
 });
 
 /**
