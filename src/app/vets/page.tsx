@@ -115,8 +115,7 @@ export default function VetsPage(): ReactElement {
 
           {/* Footer */}
           <footer className="w-full mt-16 md:mt-20 text-center text-foreground text-sm">
-            <p>Parceria entre psicologia e medicina veterinária para cuidar de quem cuida.</p>
-            <p className="mt-2">Gisele Schneider, Psicóloga CRP XX/XXXXX</p>
+            <p>Parceria entre psicologia e medicina veterinária para cuidar de quem cuida.</p>            
           </footer>
         </section>
       </main>
