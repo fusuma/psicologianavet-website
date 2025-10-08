@@ -76,19 +76,23 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
               <MessageCircle className="w-6 h-6" />
             </a>
           </div>
-          <a
-            href="https://www.giseleschneider.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              "text-sm text-foreground font-semibold transition-colors",
-              theme === 'green'
-                ? "hover:[color:hsl(var(--foreground-link-hover))]"
-                : "hover:[color:hsl(var(--foreground-hover))]"
-            )}
-          >
-            Por Gisele Schneider
-          </a>
+          <p className="text-sm text-foreground">
+            Por{' '}
+            <a
+              href="https://www.giseleschneider.com.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "font-semibold transition-colors",
+                theme === 'green'
+                  ? "hover:[color:hsl(var(--foreground-link-hover))]"
+                  : "hover:[color:hsl(var(--foreground-hover))]"
+              )}
+            >
+              Gisele Schneider
+            </a>
+            {' | Psicóloga CRP 12/7263'}
+          </p>
         </div>
       </footer>
     </div>
