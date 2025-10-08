@@ -24,7 +24,7 @@ export class EmailExistsError extends Error {
 }
 
 /**
- * Validate required environment variables
+ * Validate and sanitize required environment variables
  */
 function validateEnvironment(): void {
   const required = [
@@ -33,7 +33,7 @@ function validateEnvironment(): void {
     'BREVO_VETS_LIST_ID',
   ];
 
-  const missing = required.filter((key) => !process.env[key]);
+  const missing = required.filter((key) => !process.env[key]?.trim());
 
   if (missing.length > 0) {
     throw new Error(
@@ -41,6 +41,20 @@ function validateEnvironment(): void {
       'Please configure these in your Vercel project settings.'
     );
   }
+
+  // Trim whitespace from all env vars to prevent formatting issues
+  required.forEach((key) => {
+    const value = process.env[key];
+    if (value) {
+      process.env[key] = value.trim();
+    }
+  });
+
+  console.log('Environment validated:', {
+    apiKeyLength: process.env.BREVO_API_KEY?.length,
+    tutorsListId: process.env.BREVO_TUTORS_LIST_ID,
+    vetsListId: process.env.BREVO_VETS_LIST_ID,
+  });
 }
 
 // Validate environment on module load
