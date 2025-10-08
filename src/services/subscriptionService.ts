@@ -228,11 +228,22 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
         body: JSON.stringify(response?.body),
       });
 
-      // Check if error is "duplicate_parameter" (contact already exists)
-      const errorData = response?.data || response?.body;
-      const errorCode = (errorData as { code?: string })?.code;
-      const errorMessage = (errorData as { message?: string })?.message;
+      // Parse error data (Brevo returns JSON string in response.data)
+      let errorData: { code?: string; message?: string } | undefined;
+      try {
+        errorData = typeof response?.data === 'string'
+          ? JSON.parse(response.data)
+          : response?.data || response?.body;
+      } catch {
+        errorData = response?.data || response?.body;
+      }
 
+      const errorCode = errorData?.code;
+      const errorMessage = errorData?.message;
+
+      console.log('Parsed error data:', { errorCode, errorMessage });
+
+      // Check if error is "duplicate_parameter" (contact already exists)
       if (errorCode === 'duplicate_parameter') {
         throw new EmailExistsError('Email already subscribed');
       }
