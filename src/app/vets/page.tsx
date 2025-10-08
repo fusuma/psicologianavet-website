@@ -1,11 +1,13 @@
 import type { ReactElement } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
 import { TestimonialsCarousel } from '@/components/composite/TestimonialsCarousel';
+import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -110,7 +112,15 @@ export default function VetsPage(): ReactElement {
             <p className="text-lg md:text-xl text-white mb-6">
               Temos condições especiais para parceiros veterinários.
             </p>
-            <p className="text-white italic">[Entre em Contato]</p>
+            <Button
+              size="sm"
+              className="bg-foreground hover:bg-foreground/90 text-background font-semibold"
+              asChild
+            >
+              <Link href="https://wa.me/5511999999999?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20Programa%20de%20Afiliados">
+                Programa de Afiliados
+              </Link>
+            </Button>
           </div>
 
           {/* Footer */}
