@@ -75,7 +75,7 @@ export default function TutorsPage(): ReactElement {
                 Receba Gratuitamente
               </h6>
               <h2 className="text-2xl md:text-3xl lg:text-4xl mb-4 text-foreground">
-                <strong>Diário de Reflexão sobre seu Pet</strong>
+                <strong>Mini Caderno de Memórias & Emoções</strong>
               </h2>
               <p className="text-lg md:text-xl text-white">
                 Um presente especial para você começar a registrar as memórias, os momentos engraçados, e as lições que seu companheiro te ensinou.
