@@ -76,6 +76,19 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
   }
 
   // Layer 2: Temporal validation - check submission speed
+  if (!validated.formSubmitTime) {
+    logBotDetection(
+      BotDetectionReason.TOO_FAST,
+      {
+        timeTaken: 0,
+        threshold: config.temporal.minFormTimeMs,
+        reason: 'formSubmitTime not set',
+      },
+      validated.email
+    );
+    throw new ValidationError('Invalid form submission timing');
+  }
+
   const timeTaken = validated.formSubmitTime - validated.formLoadTime;
 
   if (timeTaken < config.temporal.minFormTimeMs) {
