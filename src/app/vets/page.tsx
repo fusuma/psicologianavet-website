@@ -49,7 +49,7 @@ export default function VetsPage(): ReactElement {
                 <TiltingBookCover />
                 <div className="space-y-6 text-left">
                   <p className="text-white">
-                    <strong>"Quando um amor se vai"</strong> é uma ferramenta psicológica criada para:
+                    <strong>&quot;Quando um amor se vai&quot;</strong> é uma ferramenta psicológica criada para:
                   </p>
 
                   <ul className="list-none space-y-4 pl-0">

@@ -1,0 +1,108 @@
+ <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Fira Sans', Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+      }
+      .header {
+        background-color: #269A9B;
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      .header h1 { 
+        margin: 0;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .content {
+        padding: 40px 30px;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .content h2 {
+        color: #269A9B;
+        font-size: 22px;
+        margin-top: 0;
+      }
+      .content p {
+        margin: 16px 0;
+        font-size: 16px;
+      }
+      .highlight {
+        background-color: #f0f9f9;
+        border-left: 4px solid #269A9B;
+        padding: 15px;
+        margin: 20px 0;
+      }
+      .footer {
+        background-color: #f5f5f5;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666666;
+      }
+      .button {
+        display: inline-block;
+        background-color: #269A9B;
+        color: white !important;
+        padding: 12px 30px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Quando um amor se vai 🐾</h1>
+      </div>
+
+      <div class="content">
+        <h2>Bem-vindo, {{params.CLINIC_NAME}}!</h2>
+
+        <p>Obrigado por se juntar à nossa comunidade de veterinários dedicados.</p>
+
+        <div class="highlight">
+          <p><strong>📎 Em anexo, você encontrará o material de apoio personalizado para
+   a sua clínica.</strong></p>
+          <p>Este material está pronto para ser compartilhado com tutores em momentos
+  difíceis. Você pode imprimi-lo ou enviá-lo digitalmente.</p>
+        </div>
+
+        <p>O PDF já vem com o nome <strong>{{params.CLINIC_NAME}}</strong> impresso na
+  última página, pronto para uso!</p>
+
+        <p>Caso não consiga visualizar o anexo, você pode baixar o material através
+  deste link:</p>
+
+        <center>
+          <a href="{{params.DOWNLOAD_LINK}}" class="button">Baixar Material de Apoio</a>
+        </center>
+
+        <p>Qualquer dúvida, estamos à disposição.</p>
+
+        <p>Com carinho,<br>
+        <strong>Equipe Quando um amor se vai</strong></p>
+      </div>
+
+      <div class="footer">
+        <p>Este email foi enviado para {{contact.EMAIL}}</p>
+        <p>Se você não solicitou este material, pode ignorar este email.</p>
+      </div>
+    </div>
+  </body>
+  </html>

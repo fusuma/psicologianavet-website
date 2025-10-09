@@ -24,7 +24,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const pdfBuffer = await personalizeAndWatermark(clinicName, email);
 
     // Return PDF as downloadable file
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

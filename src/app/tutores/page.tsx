@@ -61,7 +61,7 @@ export default function TutorsPage(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <TiltingBookCover />
             <p className="text-white">
-              "Quando um amor se vai" é um guia psicológico escrito por{' '}
+              &quot;Quando um amor se vai&quot; é um guia psicológico escrito por{' '}
               <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
             </p>
           </div>
