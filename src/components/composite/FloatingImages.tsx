@@ -20,9 +20,10 @@ export function FloatingImages() {
   const { scrollYProgress } = useScroll();
 
   // Mouse position tracking for proximity-based opacity
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
   const scrollTrigger = useMotionValue(0); // Triggers recalculation on scroll
+  const hasMouseMoved = useMotionValue(0); // Track if mouse has moved
 
   // Refs to track each image's position
   const ballRef = useRef<HTMLDivElement>(null);
@@ -43,9 +44,10 @@ export function FloatingImages() {
     my: number,
     baseOpacity: number,
     maxOpacity: number = 0.6,
-    scrollProgress: number = 0
+    scrollProgress: number = 0,
+    mouseHasMoved: number = 0
   ): number => {
-    if (!ref.current) return baseOpacity;
+    if (!ref.current || mouseHasMoved === 0) return baseOpacity;
 
     const rect = ref.current.getBoundingClientRect();
     const centerY = rect.top + rect.height / 2;
@@ -54,7 +56,7 @@ export function FloatingImages() {
     const distance = Math.abs(my - centerY);
 
     // Increase proximity threshold as you scroll (300px at top, 1000px at bottom)
-    const proximityThreshold = 300 + (scrollProgress * 700);
+    const proximityThreshold = 500 + (scrollProgress * 700);
 
     if (distance < proximityThreshold) {
       // Linear interpolation from baseOpacity to maxOpacity
@@ -66,37 +68,38 @@ export function FloatingImages() {
   };
 
   // Proximity-based opacity transforms (update on mouse move AND scroll)
-  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
-    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.6, scroll as number)
+  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
+    calculateProximityOpacity(ballRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number)
   );
 
-  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
-    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.6, scroll as number)
+  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
+    calculateProximityOpacity(miceRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number)
   );
 
-  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
-    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.6, scroll as number)
+  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
+    calculateProximityOpacity(heartRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number)
   );
 
-  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
-    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.6, scroll as number)
+  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
+    calculateProximityOpacity(boneRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number)
   );
 
   // Blur transforms - inversely proportional to opacity (more blur when less visible)
-  const ballBlur = useTransform(ballOpacity, [0.3, 0.6], [5.6, 0]);
-  const miceBlur = useTransform(miceOpacity, [0.25, 0.6], [7, 0]);
-  const heartBlur = useTransform(heartOpacity, [0.25, 0.6], [7, 0]);
-  const boneBlur = useTransform(boneOpacity, [0.2, 0.6], [8.4, 0]);
+  const ballBlur = useTransform(ballOpacity, [0.5, 0.6], [5.6, 0]);
+  const miceBlur = useTransform(miceOpacity, [0.4, 0.6], [7, 0]);
+  const heartBlur = useTransform(heartOpacity,[0.4, 0.6], [7, 0]);
+  const boneBlur = useTransform(boneOpacity, [0.5, 0.6], [8.4, 0]);
 
   // Scale transforms - proportional to opacity (smaller when faded)
-  const ballScale = useTransform(ballOpacity, [0.3, 0.6], [0.8, 1.0]);
-  const miceScale = useTransform(miceOpacity, [0.25, 0.6], [0.8, 1.0]);
-  const heartScale = useTransform(heartOpacity, [0.25, 0.6], [0.8, 1.0]);
-  const boneScale = useTransform(boneOpacity, [0.2, 0.6], [0.8, 1.0]);
+  const ballScale = useTransform(ballOpacity, [0.5, 0.6], [0.95, 1.0]);
+  const miceScale = useTransform(miceOpacity, [0.4, 0.6], [0.95, 1.0]);
+  const heartScale = useTransform(heartOpacity, [0.4, 0.6], [0.95, 1.0]);
+  const boneScale = useTransform(boneOpacity, [0.5, 0.6], [0.95, 1.0]);
 
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
+      hasMouseMoved.set(1);
       mouseX.set(event.clientX);
       mouseY.set(event.clientY);
     };
@@ -113,14 +116,14 @@ export function FloatingImages() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [mouseX, mouseY, scrollTrigger]);
+  }, [mouseX, mouseY, scrollTrigger, hasMouseMoved]);
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       {/* Ball - Upper Right */}
       <motion.div
         ref={ballRef}
-        className="absolute top-[15%] right-[-15%] md:right-[-8%] pointer-events-none"
+        className="absolute top-[5%] right-[-6%] md:right-[-6%] pointer-events-none"
         style={{
           y: y1,
           opacity: ballOpacity,
@@ -145,7 +148,7 @@ export function FloatingImages() {
       {/* Mice - Middle Left */}
       <motion.div
         ref={miceRef}
-        className="absolute top-[50%] left-[-8%] pointer-events-none"
+        className="absolute top-[30%] left-[-8%] pointer-events-none"
         style={{
           y: y3,
           opacity: miceOpacity,
