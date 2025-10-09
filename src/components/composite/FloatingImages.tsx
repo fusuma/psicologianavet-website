@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
@@ -13,8 +13,13 @@ import { useEffect, useRef } from 'react';
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
  * - Proximity-based opacity (images become more visible when mouse is closer)
- * - Staggered entrance animations when scrolling into view
+ * - Staggered entrance animations triggered on first mouse movement (prevents flicker)
  * - Responsive sizing (larger on desktop, smaller on mobile)
+ *
+ * Anti-flicker mechanism:
+ * - Images remain hidden until first mouse movement is detected
+ * - Ensures mouse position context is available before fade-in begins
+ * - Provides smooth transition to proximity-based opacity calculations
  */
 export function FloatingImages() {
   const { scrollYProgress } = useScroll();
@@ -24,6 +29,7 @@ export function FloatingImages() {
   const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
   const scrollTrigger = useMotionValue(0); // Triggers recalculation on scroll
   const hasMouseMoved = useMotionValue(0); // Track if mouse has moved
+  const fadeInProgress = useMotionValue(0); // Fade-in multiplier (0 to 1)
 
   // Refs to track each image's position
   const ballRef = useRef<HTMLDivElement>(null);
@@ -68,20 +74,21 @@ export function FloatingImages() {
   };
 
   // Proximity-based opacity transforms (update on mouse move AND scroll)
-  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
-    calculateProximityOpacity(ballRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number)
+  // Multiplied by fadeInProgress to enable smooth fade-in on first mouse movement
+  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
+    calculateProximityOpacity(ballRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
-  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
-    calculateProximityOpacity(miceRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number)
+  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
+    calculateProximityOpacity(miceRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
-  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
-    calculateProximityOpacity(heartRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number)
+  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
+    calculateProximityOpacity(heartRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
-  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved], ([mx, my, _, scroll, moved]) =>
-    calculateProximityOpacity(boneRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number)
+  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
+    calculateProximityOpacity(boneRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
   // Blur transforms - inversely proportional to opacity (more blur when less visible)
@@ -98,10 +105,20 @@ export function FloatingImages() {
 
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
+    let hasTriggeredFadeIn = false;
+
     const handleMouseMove = (event: MouseEvent) => {
-      hasMouseMoved.set(1);
       mouseX.set(event.clientX);
       mouseY.set(event.clientY);
+
+      // Trigger fade-in only on first mouse movement
+      if (!hasTriggeredFadeIn) {
+        hasTriggeredFadeIn = true;
+        hasMouseMoved.set(1); // Enable proximity calculations
+
+        // Animate fadeInProgress from 0 to 1 (smooth fade-in)
+        animate(fadeInProgress, 1, { duration: 0.8, ease: 'easeOut' });
+      }
     };
 
     const handleScroll = () => {
@@ -116,7 +133,7 @@ export function FloatingImages() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [mouseX, mouseY, scrollTrigger, hasMouseMoved]);
+  }, [mouseX, mouseY, scrollTrigger, hasMouseMoved, fadeInProgress]);
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
@@ -130,10 +147,6 @@ export function FloatingImages() {
           scale: ballScale,
           filter: useTransform(ballBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.3 }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         <Image
           src="/images/ball.png"
@@ -155,10 +168,6 @@ export function FloatingImages() {
           scale: miceScale,
           filter: useTransform(miceBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.25 }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
       >
         <Image
           src="/images/mice.png"
@@ -180,10 +189,6 @@ export function FloatingImages() {
           scale: heartScale,
           filter: useTransform(heartBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.25 }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
       >
         <Image
           src="/images/heart.png"
@@ -205,10 +210,6 @@ export function FloatingImages() {
           scale: boneScale,
           filter: useTransform(boneBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.2 }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: 0.25, ease: 'easeOut' }}
       >
         <Image
           src="/images/bone.png"
