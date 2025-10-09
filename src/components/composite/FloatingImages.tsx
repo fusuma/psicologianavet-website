@@ -119,6 +119,7 @@ export function FloatingImages() {
   // Device orientation listener for mobile accelerometer
   useEffect(() => {
     let isActive = true;
+    let orientationHandlerAdded = false;
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
       if (!isActive) return;
@@ -135,30 +136,36 @@ export function FloatingImages() {
 
     const setupOrientation = async () => {
       // Check if device supports orientation
-      if (typeof window === 'undefined' || !window.DeviceOrientationEvent) return;
+      if (typeof window === 'undefined' || !window.DeviceOrientationEvent) {
+        console.log('Device orientation not supported');
+        return;
+      }
 
       // iOS 13+ requires permission via user interaction
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        // Set up a one-time click handler to request permission
+        // Set up a one-time touch handler to request permission
         const handleFirstTouch = async () => {
           try {
             const permissionState = await (DeviceOrientationEvent as any).requestPermission();
+            console.log('Device orientation permission:', permissionState);
             if (permissionState === 'granted' && isActive) {
-              window.addEventListener('deviceorientation', handleOrientation);
+              window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+              orientationHandlerAdded = true;
+              console.log('Device orientation enabled (iOS)');
             }
           } catch (error) {
             console.warn('Device orientation permission denied:', error);
           }
-          // Remove this listener after first interaction
-          window.removeEventListener('click', handleFirstTouch);
-          window.removeEventListener('touchstart', handleFirstTouch);
         };
 
-        window.addEventListener('click', handleFirstTouch, { once: true });
-        window.addEventListener('touchstart', handleFirstTouch, { once: true });
+        // Use once to auto-remove after first interaction
+        window.addEventListener('touchstart', handleFirstTouch, { once: true, passive: true });
+        console.log('Waiting for touch to request orientation permission (iOS)');
       } else {
         // Non-iOS or older iOS - no permission needed
-        window.addEventListener('deviceorientation', handleOrientation);
+        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+        orientationHandlerAdded = true;
+        console.log('Device orientation enabled (non-iOS)');
       }
     };
 
@@ -166,7 +173,9 @@ export function FloatingImages() {
 
     return () => {
       isActive = false;
-      window.removeEventListener('deviceorientation', handleOrientation);
+      if (orientationHandlerAdded) {
+        window.removeEventListener('deviceorientation', handleOrientation);
+      }
     };
   }, [motionX, motionY]);
 
@@ -177,7 +186,7 @@ export function FloatingImages() {
         ref={ballRef}
         className="absolute top-[25%] right-[1%] z-0 pointer-events-none"
         style={{
-          y: y1,
+          y: useTransform([y1, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 0.8),
           x: useTransform(smoothX, (x) => x * -0.8),
           opacity: ballOpacity,
         }}
@@ -201,7 +210,7 @@ export function FloatingImages() {
         ref={miceRef}
         className="absolute top-[50%] left-[1%] z-0 pointer-events-none"
         style={{
-          y: y3,
+          y: useTransform([y3, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 0.9),
           x: useTransform(smoothX, (x) => x * 0.7),
           opacity: miceOpacity,
         }}
@@ -225,7 +234,7 @@ export function FloatingImages() {
         ref={heartRef}
         className="absolute top-[90%] left-[1%] z-0 pointer-events-none"
         style={{
-          y: y2,
+          y: useTransform([y2, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 0.6),
           x: useTransform(smoothX, (x) => x * 0.6),
           opacity: heartOpacity,
         }}
@@ -249,7 +258,7 @@ export function FloatingImages() {
         ref={boneRef}
         className="absolute top-[75%] right-[1%] z-0 pointer-events-none"
         style={{
-          y: y4,
+          y: useTransform([y4, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 0.7),
           x: useTransform(smoothX, (x) => x * -0.9),
           opacity: boneOpacity,
         }}
