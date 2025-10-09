@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * FloatingImages Component
@@ -12,6 +12,7 @@ import { useEffect } from 'react';
  * Features:
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
+ * - Proximity-based opacity (images become more visible when mouse is closer)
  * - Mobile gyroscope/accelerometer support for tilt-based movement
  * - Staggered entrance animations when scrolling into view
  * - Responsive sizing (larger on desktop, smaller on mobile)
@@ -23,6 +24,17 @@ import { useEffect } from 'react';
  */
 export function FloatingImages() {
   const { scrollYProgress } = useScroll();
+
+  // Mouse position tracking for proximity-based opacity
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const scrollTrigger = useMotionValue(0); // Triggers recalculation on scroll
+
+  // Refs to track each image's position
+  const ballRef = useRef<HTMLDivElement>(null);
+  const miceRef = useRef<HTMLDivElement>(null);
+  const heartRef = useRef<HTMLDivElement>(null);
+  const boneRef = useRef<HTMLDivElement>(null);
 
   // Device motion values for mobile tilt
   const motionX = useMotionValue(0);
@@ -37,6 +49,72 @@ export function FloatingImages() {
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const y3 = useTransform(scrollYProgress, [0, 1], [0, -180]);
   const y4 = useTransform(scrollYProgress, [0, 1], [0, -120]);
+
+  // Helper function to calculate opacity based on Y proximity only
+  const calculateProximityOpacity = (
+    ref: React.RefObject<HTMLDivElement>,
+    mx: number,
+    my: number,
+    baseOpacity: number,
+    maxOpacity: number = 0.8
+  ): number => {
+    if (!ref.current) return baseOpacity;
+
+    const rect = ref.current.getBoundingClientRect();
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate vertical distance only
+    const distance = Math.abs(my - centerY);
+
+    // Define proximity threshold (pixels) - closer than this gets max opacity
+    const proximityThreshold = 300;
+
+    if (distance < proximityThreshold) {
+      // Linear interpolation from baseOpacity to maxOpacity
+      const factor = 1 - distance / proximityThreshold;
+      return baseOpacity + (maxOpacity - baseOpacity) * factor;
+    }
+
+    return baseOpacity;
+  };
+
+  // Proximity-based opacity transforms (update on mouse move AND scroll)
+  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
+    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.9)
+  );
+
+  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
+    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.85)
+  );
+
+  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
+    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.85)
+  );
+
+  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
+    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.8)
+  );
+
+  // Mouse tracking for proximity-based opacity
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseX.set(event.clientX);
+      mouseY.set(event.clientY);
+    };
+
+    const handleScroll = () => {
+      // Trigger recalculation by updating scrollTrigger
+      scrollTrigger.set(Math.random());
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [mouseX, mouseY, scrollTrigger]);
 
   // Device orientation listener for mobile accelerometer
   useEffect(() => {
@@ -96,10 +174,12 @@ export function FloatingImages() {
     <>
       {/* Ball - Upper Right */}
       <motion.div
-        className="absolute top-[25%] right-[1%] z-0 pointer-events-none opacity-30"
+        ref={ballRef}
+        className="absolute top-[25%] right-[1%] z-0 pointer-events-none"
         style={{
           y: y1,
           x: useTransform(smoothX, (x) => x * -0.8),
+          opacity: ballOpacity,
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.3, scale: 1 }}
@@ -118,10 +198,12 @@ export function FloatingImages() {
 
       {/* Mice - Middle Left */}
       <motion.div
-        className="absolute top-[50%] left-[1%] z-0 pointer-events-none opacity-25"
+        ref={miceRef}
+        className="absolute top-[50%] left-[1%] z-0 pointer-events-none"
         style={{
           y: y3,
           x: useTransform(smoothX, (x) => x * 0.7),
+          opacity: miceOpacity,
         }}
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 0.25, x: 0 }}
@@ -140,10 +222,12 @@ export function FloatingImages() {
 
       {/* Heart - Bottom Left */}
       <motion.div
-        className="absolute top-[90%] left-[1%] z-0 pointer-events-none opacity-25"
+        ref={heartRef}
+        className="absolute top-[90%] left-[1%] z-0 pointer-events-none"
         style={{
           y: y2,
           x: useTransform(smoothX, (x) => x * 0.6),
+          opacity: heartOpacity,
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.25, scale: 1 }}
@@ -162,10 +246,12 @@ export function FloatingImages() {
 
       {/* Bone - Bottom Right */}
       <motion.div
-        className="absolute top-[75%] right-[1%] z-0 pointer-events-none opacity-20"
+        ref={boneRef}
+        className="absolute top-[75%] right-[1%] z-0 pointer-events-none"
         style={{
           y: y4,
           x: useTransform(smoothX, (x) => x * -0.9),
+          opacity: boneOpacity,
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.2, scale: 1 }}
