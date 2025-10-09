@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
@@ -13,14 +13,8 @@ import { useEffect, useRef } from 'react';
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
  * - Proximity-based opacity (images become more visible when mouse is closer)
- * - Mobile gyroscope/accelerometer support for tilt-based movement
  * - Staggered entrance animations when scrolling into view
  * - Responsive sizing (larger on desktop, smaller on mobile)
- *
- * Mobile Accelerometer:
- * - On iOS 13+: First tap/touch requests permission, then tilt phone to see effect
- * - On Android/other: Works automatically, no permission needed
- * - Desktop: Only scroll parallax (no tilt effect)
  */
 export function FloatingImages() {
   const { scrollYProgress } = useScroll();
@@ -35,14 +29,6 @@ export function FloatingImages() {
   const miceRef = useRef<HTMLDivElement>(null);
   const heartRef = useRef<HTMLDivElement>(null);
   const boneRef = useRef<HTMLDivElement>(null);
-
-  // Device motion values for mobile tilt
-  const motionX = useMotionValue(0);
-  const motionY = useMotionValue(0);
-
-  // Smooth spring animation for device motion
-  const smoothX = useSpring(motionX, { damping: 20, stiffness: 100 });
-  const smoothY = useSpring(motionY, { damping: 20, stiffness: 100 });
 
   // GSAP-style parallax transforms (different speeds for depth)
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
@@ -95,6 +81,12 @@ export function FloatingImages() {
     calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.6)
   );
 
+  // Blur transforms - inversely proportional to opacity (more blur when less visible)
+  const ballBlur = useTransform(ballOpacity, [0.3, 0.6], [8, 0]);
+  const miceBlur = useTransform(miceOpacity, [0.25, 0.6], [10, 0]);
+  const heartBlur = useTransform(heartOpacity, [0.25, 0.6], [10, 0]);
+  const boneBlur = useTransform(boneOpacity, [0.2, 0.6], [12, 0]);
+
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -116,80 +108,6 @@ export function FloatingImages() {
     };
   }, [mouseX, mouseY, scrollTrigger]);
 
-  // Device orientation listener for mobile accelerometer
-  useEffect(() => {
-    let isActive = true;
-    let orientationHandlerAdded = false;
-
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (!isActive) return;
-
-      // beta: front-back tilt (-180 to 180)
-      // gamma: left-right tilt (-90 to 90)
-      const beta = event.beta || 0;
-      const gamma = event.gamma || 0;
-
-      // Log values for debugging (throttled)
-      if (Math.random() < 0.01) {
-        console.log('Orientation:', { beta, gamma });
-      }
-
-      // Increased sensitivity for more noticeable movement
-      motionX.set(gamma * 1.5); // -135 to 135
-      motionY.set(beta * 1.0); // -180 to 180
-    };
-
-    const setupOrientation = async () => {
-      // Check if device supports orientation
-      if (typeof window === 'undefined' || !window.DeviceOrientationEvent) {
-        console.log('Device orientation not supported');
-        return;
-      }
-
-      // iOS 13+ requires permission via user interaction
-      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        console.log('iOS detected - needs permission');
-
-        // Set up a one-time interaction handler to request permission
-        const handleFirstInteraction = async (e: Event) => {
-          console.log('First interaction detected, requesting permission...');
-          try {
-            const permissionState = await (DeviceOrientationEvent as any).requestPermission();
-            console.log('Device orientation permission:', permissionState);
-            if (permissionState === 'granted' && isActive) {
-              window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-              orientationHandlerAdded = true;
-              console.log('✅ Device orientation enabled (iOS)');
-            } else {
-              console.log('❌ Permission not granted:', permissionState);
-            }
-          } catch (error) {
-            console.warn('Device orientation permission error:', error);
-          }
-        };
-
-        // Listen to multiple interaction types on document for better capture
-        document.addEventListener('touchstart', handleFirstInteraction, { once: true, passive: true });
-        document.addEventListener('click', handleFirstInteraction, { once: true });
-        console.log('👆 Tap anywhere to enable device tilt');
-      } else {
-        // Non-iOS or older iOS - no permission needed
-        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-        orientationHandlerAdded = true;
-        console.log('Device orientation enabled (non-iOS)');
-      }
-    };
-
-    setupOrientation();
-
-    return () => {
-      isActive = false;
-      if (orientationHandlerAdded) {
-        window.removeEventListener('deviceorientation', handleOrientation);
-      }
-    };
-  }, [motionX, motionY]);
-
   return (
     <>
       {/* Ball - Upper Right */}
@@ -197,9 +115,9 @@ export function FloatingImages() {
         ref={ballRef}
         className="absolute top-[25%] right-[1%] z-0 pointer-events-none"
         style={{
-          y: useTransform([y1, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 1.2),
-          x: useTransform(smoothX, (x) => x * -1.2),
+          y: y1,
           opacity: ballOpacity,
+          filter: useTransform(ballBlur, (b) => `blur(${b}px)`),
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.3, scale: 1 }}
@@ -221,9 +139,9 @@ export function FloatingImages() {
         ref={miceRef}
         className="absolute top-[50%] left-[1%] z-0 pointer-events-none"
         style={{
-          y: useTransform([y3, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 1.4),
-          x: useTransform(smoothX, (x) => x * 1.0),
+          y: y3,
           opacity: miceOpacity,
+          filter: useTransform(miceBlur, (b) => `blur(${b}px)`),
         }}
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 0.25, x: 0 }}
@@ -245,9 +163,9 @@ export function FloatingImages() {
         ref={heartRef}
         className="absolute top-[90%] left-[1%] z-0 pointer-events-none"
         style={{
-          y: useTransform([y2, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 0.9),
-          x: useTransform(smoothX, (x) => x * 0.9),
+          y: y2,
           opacity: heartOpacity,
+          filter: useTransform(heartBlur, (b) => `blur(${b}px)`),
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.25, scale: 1 }}
@@ -269,9 +187,9 @@ export function FloatingImages() {
         ref={boneRef}
         className="absolute top-[75%] right-[1%] z-0 pointer-events-none"
         style={{
-          y: useTransform([y4, smoothY], ([scroll, tilt]) => (scroll as number) + (tilt as number) * 1.0),
-          x: useTransform(smoothX, (x) => x * -1.3),
+          y: y4,
           opacity: boneOpacity,
+          filter: useTransform(boneBlur, (b) => `blur(${b}px)`),
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 0.2, scale: 1 }}
