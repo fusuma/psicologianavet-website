@@ -56,7 +56,7 @@ export default function VetsPage(): ReactElement {
                 </div>
                 <div className="space-y-6 text-left">
                   <p className="text-white">
-                    <strong>&quot;Quando um amor se vai&quot;</strong> é um recurso especializado que fortalece
+                    <strong className="text-foreground">Quando um amor se vai</strong> é um recurso especializado que fortalece
                     o vínculo entre você e seus clientes:
                   </p>
 
