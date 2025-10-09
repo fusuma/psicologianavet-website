@@ -15,11 +15,14 @@ export default function Home(): ReactElement {
     <Layout theme="dark">
       <div className="relative overflow-hidden">
         <FloatingImages />
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[60vh] space-y-12">
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-[50vh] space-y-8">
         {/* Hero Section */}
         <section className="text-center space-y-4 max-w-4xl px-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading">
-            Se hoje há dor, é porque ontem houve amor.
+          <h2 className="text-[2rem] font-heading">
+            Se hoje há dor,
+          </h2>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
+            é porque ontem houve amor.
           </h1>
           <div className="flex justify-center py-2">
             <Image
