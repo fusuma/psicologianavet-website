@@ -40,7 +40,7 @@
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
     }
     .logo {
-      max-width: 180px;
+      max-width: 300px;
       height: auto;
       display: block;
       margin: 0 auto 24px;
@@ -134,6 +134,14 @@
       color: #718096;
       line-height: 1.6;
     }
+    .footer a {
+      color: #269A9B;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
     .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
@@ -163,11 +171,10 @@
   <div class="wrapper">
     <div class="container">
       <div class="header">
-        <img src="https://quandoumamorsevaí.com.br/images/psicologianavet.png"
+        <img src="https://psicologianavet.com.br/images/psicologianavet.png"
              alt="Psicologia na Vet"
-             width="180"
-             class="logo">
-        <h1>Quando um amor se vai 🐾</h1>
+             width="300"
+             class="logo">        
       </div>
 
       <div class="content">
@@ -200,6 +207,7 @@
       <div class="footer">
         <p>Este email foi enviado para <strong>{{contact.EMAIL}}</strong></p>
         <p>Se você não solicitou este material, pode ignorar este email.</p>
+        <p><a href="{{ unsubscribe }}">Cancelar inscrição</a></p>
       </div>
     </div>
   </div>
