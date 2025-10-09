@@ -42,7 +42,8 @@ export function FloatingImages() {
     mx: number,
     my: number,
     baseOpacity: number,
-    maxOpacity: number = 0.6
+    maxOpacity: number = 0.6,
+    scrollProgress: number = 0
   ): number => {
     if (!ref.current) return baseOpacity;
 
@@ -52,8 +53,8 @@ export function FloatingImages() {
     // Calculate vertical distance only
     const distance = Math.abs(my - centerY);
 
-    // Define proximity threshold (pixels) - closer than this gets max opacity
-    const proximityThreshold = 300;
+    // Increase proximity threshold as you scroll (300px at top, 1000px at bottom)
+    const proximityThreshold = 300 + (scrollProgress * 700);
 
     if (distance < proximityThreshold) {
       // Linear interpolation from baseOpacity to maxOpacity
@@ -65,20 +66,20 @@ export function FloatingImages() {
   };
 
   // Proximity-based opacity transforms (update on mouse move AND scroll)
-  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.6)
+  const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
+    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.6, scroll as number)
   );
 
-  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.6)
+  const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
+    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.6, scroll as number)
   );
 
-  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.6)
+  const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
+    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.6, scroll as number)
   );
 
-  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.6)
+  const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress], ([mx, my, _, scroll]) =>
+    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.6, scroll as number)
   );
 
   // Blur transforms - inversely proportional to opacity (more blur when less visible)
