@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "optimize:images": "node scripts/optimize-images.js standard",
+    "optimize:images:aggressive": "node scripts/optimize-images.js aggressive"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
@@ -43,6 +45,7 @@
   "devDependencies": {
     "axe-core": "^4.10.3",
     "cypress": "^15.3.0",
-    "cypress-axe": "^1.7.0"
+    "cypress-axe": "^1.7.0",
+    "sharp": "^0.34.4"
   }
 }

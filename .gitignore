@@ -43,3 +43,6 @@ cypress/videos
 
 # personalized PDFs (generated, not committed)
 public/assets/personalized-*.pdf
+
+# image optimization backups
+public/images/.originals/
