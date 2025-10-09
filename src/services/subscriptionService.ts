@@ -119,9 +119,11 @@ async function sendWelcomeEmailWithPDF(
   const emailPayload = new brevo.SendSmtpEmail();
   emailPayload.to = [{ email }];
   emailPayload.templateId = parseInt(templateId, 10);
+  // URL-encode clinic name for download link
+  const encodedClinicName = encodeURIComponent(clinicName);
   emailPayload.params = {
     CLINIC_NAME: clinicName,
-    DOWNLOAD_LINK: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/v1/pdf/download`, // Fallback link
+    DOWNLOAD_LINK: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/pdf/download?clinicName=${encodedClinicName}`,
   };
 
   // Sanitize filename for attachment
