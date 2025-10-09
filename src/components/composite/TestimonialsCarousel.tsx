@@ -30,7 +30,7 @@ const testimonials: Testimonial[] = [
     role: 'Médica Veterinária',
     testimonial:
       'Ter um recurso psicológico para indicar aos meus clientes fez toda a diferença. Muitos agradecem o cuidado além do consultório.',
-    image: '/images/testimonial-1.png',
+    image: '/images/testimonial-1.jpg',
   },
   {
     id: 2,
@@ -38,7 +38,7 @@ const testimonials: Testimonial[] = [
     role: 'Médico Veterinário',
     testimonial:
       'Este material me ajudou a oferecer um suporte mais completo nos momentos mais difíceis. Meus clientes se sentem mais acolhidos e compreendidos.',
-    image: '/images/testimonial-2.png',
+    image: '/images/testimonial-2.jpg',
   },
   {
     id: 3,
@@ -46,7 +46,7 @@ const testimonials: Testimonial[] = [
     role: 'Médica Veterinária',
     testimonial:
       'Finalmente um recurso profissional que aborda o luto pet com a seriedade e delicadeza que merece. Recomendo a todos os tutores que atendo.',
-    image: '/images/testimonial-3.png',
+    image: '/images/testimonial-3.jpg',
   },
 ];
 
