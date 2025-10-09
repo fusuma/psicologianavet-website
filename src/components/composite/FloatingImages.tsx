@@ -39,13 +39,13 @@ function selectRandomImages(count: number): string[] {
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
  * - Proximity-based opacity (images become more visible when mouse is closer)
- * - Staggered entrance animations triggered on first mouse movement (prevents flicker)
+ * - Staggered entrance animations with smart activation
  * - Responsive sizing (larger on desktop, smaller on mobile)
  *
- * Anti-flicker mechanism:
- * - Images remain hidden until first mouse movement is detected
- * - Ensures mouse position context is available before fade-in begins
- * - Provides smooth transition to proximity-based opacity calculations
+ * Smart animation activation:
+ * - Desktop: Triggers on first mouse movement (preserves anti-flicker)
+ * - Mobile: Triggers immediately via touch or auto-starts after 100ms
+ * - Ensures smooth fade-in on all devices without waiting for interaction
  */
 export function FloatingImages() {
   // Randomly select 4 unique images on component mount
@@ -144,19 +144,26 @@ export function FloatingImages() {
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
     let hasTriggeredFadeIn = false;
+    let autoStartTimer: NodeJS.Timeout | null = null;
+
+    const triggerFadeIn = () => {
+      if (!hasTriggeredFadeIn) {
+        hasTriggeredFadeIn = true;
+        hasMouseMoved.set(1); // Enable proximity calculations
+        // Animate fadeInProgress from 0 to 1 (smooth fade-in)
+        animate(fadeInProgress, 1, { duration: 0.8, ease: 'easeOut' });
+      }
+    };
 
     const handleMouseMove = (event: MouseEvent) => {
       mouseX.set(event.clientX);
       mouseY.set(event.clientY);
+      triggerFadeIn();
+    };
 
-      // Trigger fade-in only on first mouse movement
-      if (!hasTriggeredFadeIn) {
-        hasTriggeredFadeIn = true;
-        hasMouseMoved.set(1); // Enable proximity calculations
-
-        // Animate fadeInProgress from 0 to 1 (smooth fade-in)
-        animate(fadeInProgress, 1, { duration: 0.8, ease: 'easeOut' });
-      }
+    const handleTouchStart = () => {
+      // On touch devices, trigger fade-in immediately
+      triggerFadeIn();
     };
 
     const handleScroll = () => {
@@ -164,11 +171,19 @@ export function FloatingImages() {
       scrollTrigger.set(Math.random());
     };
 
+    // Auto-start after 100ms if no interaction (for mobile devices without touch events)
+    autoStartTimer = setTimeout(() => {
+      triggerFadeIn();
+    }, 100);
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
+      if (autoStartTimer) clearTimeout(autoStartTimer);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('scroll', handleScroll);
     };
   }, [mouseX, mouseY, scrollTrigger, hasMouseMoved, fadeInProgress]);
