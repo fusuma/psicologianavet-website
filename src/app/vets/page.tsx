@@ -8,6 +8,7 @@ import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
 import { TestimonialsCarousel } from '@/components/composite/TestimonialsCarousel';
 import { Button } from '@/components/ui/button';
+import { HotmartButton } from '@/components/composite/HotmartButton';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -23,8 +24,11 @@ export default function VetsPage(): ReactElement {
           <section className="flex flex-col items-center justify-center max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="w-full text-center mb-12 md:mb-16">
+            <h4 className="text-xl md:text-2xl mb-2 text-foreground/80">
+              Apoie seus Clientes
+            </h4>
             <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
-              Apoie seus Clientes nos Momentos Mais Delicados
+              nos Momentos Mais Delicados
             </h1>
             <div className="flex justify-center py-2">
               <Image
@@ -46,31 +50,35 @@ export default function VetsPage(): ReactElement {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
-                <TiltingBookCover />
+                <div className="flex flex-col items-center gap-6">
+                  <TiltingBookCover />
+                  <HotmartButton href="https://hotmart.com" theme="green" />
+                </div>
                 <div className="space-y-6 text-left">
                   <p className="text-white">
-                    <strong>&quot;Quando um amor se vai&quot;</strong> é uma ferramenta psicológica criada para:
+                    <strong>&quot;Quando um amor se vai&quot;</strong> é um recurso especializado que fortalece
+                    o vínculo entre você e seus clientes:
                   </p>
 
                   <ul className="list-none space-y-4 pl-0">
                     <li className="flex items-start">
                       <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                      <span className="text-white">Ajudar tutores a processar o luto de forma saudável</span>
+                      <span className="text-white">Oferece suporte psicológico estruturado para o processo de luto dos tutores</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                      <span className="text-white">Oferecer palavras e recursos quando você não sabe exatamente o que dizer</span>
+                      <span className="text-white">Fornece as palavras certas para os momentos mais delicados da sua profissão</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                      <span className="text-white">Posicionar sua clínica como um espaço de cuidado integral (físico e emocional)</span>
+                      <span className="text-white">Diferencia sua clínica como referência em cuidado compassivo e humanizado</span>
                     </li>
                   </ul>
 
                   <p className="text-white">
-                    Escrito por <strong className="text-foreground">Gisele Schneider</strong>, psicóloga
-                    especialista em luto e vínculo humano-animal, este ebook pode se tornar um recurso
-                    valioso para sua prática.
+                    Desenvolvido por <strong className="text-foreground">Gisele Schneider</strong>, psicóloga
+                    especialista em luto e vínculo humano-animal, este ebook oferece as palavras certas
+                    nos momentos em que mais importam — complementando o cuidado clínico que você já presta.
                   </p>
                 </div>
               </div>
@@ -87,9 +95,9 @@ export default function VetsPage(): ReactElement {
                   <strong>Apoio para Momentos Difíceis</strong>
                 </h3>
                 <p className="text-lg md:text-xl text-white">
-                  Um handout profissional e delicado que você pode entregar (físico ou digital) aos
-                  tutores que enfrentam a perda de um pet. Discretamente assinado, este material
-                  posiciona você como um parceiro empático.
+                  Um material de apoio profissional e sensível para entregar (impresso ou digital) aos
+                  tutores nos momentos mais difíceis. Com sua assinatura discreta, este guia demonstra
+                  o cuidado integral que sua clínica oferece — muito além da medicina veterinária.
                 </p>
               </div>
 

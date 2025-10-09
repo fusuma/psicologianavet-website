@@ -5,6 +5,7 @@ import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
+import { HotmartButton } from '@/components/composite/HotmartButton';
 
 export const metadata: Metadata = {
   title: 'Para Tutores - Quando um amor se vai',
@@ -40,30 +41,40 @@ export default function TutorsPage(): ReactElement {
           </p>
 
           <div className="space-y-6">
-            <p className="text-white">Este espaço foi criado para você que:</p>
+            <p className="text-white">Este espaço é para você que:</p>
 
             <ul className="list-none space-y-4 pl-0">
               <li className="flex items-start">
                 <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Deseja honrar a memória de um companheiro especial</span>
+                <span className="text-white">Sente que ninguém compreende a profundidade da sua dor</span>
               </li>
               <li className="flex items-start">
                 <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Busca apoio gentil para processar a perda</span>
+                <span className="text-white">Quer honrar as memórias sem se sentir culpado por seguir em frente</span>
               </li>
               <li className="flex items-start">
                 <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Quer celebrar o vínculo único que compartilhou com seu pet</span>
+                <span className="text-white">Busca um caminho gentil para transformar a dor em gratidão</span>
               </li>
             </ul>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <TiltingBookCover />
-            <p className="text-white">
-              &quot;Quando um amor se vai&quot; é um guia psicológico escrito por{' '}
-              <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista no vínculo humano-animal, para acompanhar você nessa jornada de recordação, gratidão e cura.
-            </p>
+            <div className="flex flex-col items-center gap-6">
+              <TiltingBookCover />
+              <HotmartButton href="https://hotmart.com" />
+            </div>
+            <div className="space-y-4">
+              <p className="text-white">
+                <strong className="text-foreground">Quando um amor se vai</strong> é um ebook desenvolvido
+                por <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista
+                em luto e vínculo humano-animal.
+              </p>
+              <p className="text-white">
+                Este material oferece ferramentas gentis e práticas para navegar o luto, honrar memórias preciosas,
+                e encontrar paz em meio à saudade — respeitando seu tempo e sua dor.
+              </p>
+            </div>
           </div>
         </div>
 

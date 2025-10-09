@@ -56,7 +56,7 @@ export function FloatingImages() {
     mx: number,
     my: number,
     baseOpacity: number,
-    maxOpacity: number = 0.8
+    maxOpacity: number = 0.6
   ): number => {
     if (!ref.current) return baseOpacity;
 
@@ -80,19 +80,19 @@ export function FloatingImages() {
 
   // Proximity-based opacity transforms (update on mouse move AND scroll)
   const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.9)
+    calculateProximityOpacity(ballRef, mx as number, my as number, 0.3, 0.6)
   );
 
   const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.85)
+    calculateProximityOpacity(miceRef, mx as number, my as number, 0.25, 0.6)
   );
 
   const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.85)
+    calculateProximityOpacity(heartRef, mx as number, my as number, 0.25, 0.6)
   );
 
   const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger], ([mx, my]) =>
-    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.8)
+    calculateProximityOpacity(boneRef, mx as number, my as number, 0.2, 0.6)
   );
 
   // Mouse tracking for proximity-based opacity

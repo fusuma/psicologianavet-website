@@ -20,6 +20,7 @@ export default {
       },
       animation: {
         shine: "shine var(--duration) infinite linear",
+        gradient: "gradient 8s linear infinite",
       },
       keyframes: {
         shine: {
@@ -31,6 +32,11 @@ export default {
           },
           to: {
             "background-position": "0% 0%",
+          },
+        },
+        gradient: {
+          to: {
+            "background-position": "200% center",
           },
         },
       },
