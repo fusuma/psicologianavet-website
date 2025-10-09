@@ -3,11 +3,11 @@
 /**
  * Image Optimization Script
  *
- * Uses Sharp to optimize images in /public/images directory:
+ * Uses Sharp to recursively optimize images in /public/images directory and subdirectories:
  * - Compresses PNGs with transparency (lossless and lossy modes)
  * - Converts large opaque images to WebP
  * - Generates statistics on file size savings
- * - Creates backups before optimization
+ * - Creates backups before optimization (preserving directory structure)
  *
  * Usage:
  *   npm run optimize:images           # Standard optimization
@@ -83,12 +83,16 @@ function formatBytes(bytes) {
 }
 
 /**
- * Create backup of original file
+ * Create backup of original file (preserving directory structure)
  */
-async function backupFile(filePath, backupDir) {
-  await fs.mkdir(backupDir, { recursive: true });
-  const fileName = path.basename(filePath);
-  const backupPath = path.join(backupDir, fileName);
+async function backupFile(filePath, imagesDir, backupDir) {
+  // Get relative path from images directory
+  const relativePath = path.relative(imagesDir, filePath);
+  const backupPath = path.join(backupDir, relativePath);
+  const backupDirPath = path.dirname(backupPath);
+
+  // Create backup directory structure
+  await fs.mkdir(backupDirPath, { recursive: true });
 
   // Only backup if not already backed up
   try {
@@ -152,7 +156,7 @@ async function optimizeJPEG(filePath, quality) {
 /**
  * Process a single image file
  */
-async function processImage(filePath, quality) {
+async function processImage(filePath, quality, imagesDir, backupDir) {
   const fileName = path.basename(filePath);
   const ext = path.extname(filePath).toLowerCase();
 
@@ -162,13 +166,13 @@ async function processImage(filePath, quality) {
     return;
   }
 
-  console.log(`\n📸 Processing: ${fileName}`);
+  console.log(`📸 Processing: ${fileName}`);
 
   const originalSize = await getFileSize(filePath);
   stats.totalOriginalSize += originalSize;
 
-  // Backup original
-  await backupFile(filePath, CONFIG.backupDir);
+  // Backup original (preserving directory structure)
+  await backupFile(filePath, imagesDir, backupDir);
 
   try {
     if (ext === '.png') {
@@ -211,31 +215,53 @@ async function processImage(filePath, quality) {
 }
 
 /**
+ * Recursively find all image files in a directory
+ */
+async function findImageFiles(dir, fileList = []) {
+  const files = await fs.readdir(dir, { withFileTypes: true });
+
+  for (const file of files) {
+    const filePath = path.join(dir, file.name);
+
+    if (file.isDirectory()) {
+      // Skip backup directory
+      if (file.name === '.originals') continue;
+      // Recursively process subdirectories
+      await findImageFiles(filePath, fileList);
+    } else {
+      const ext = path.extname(file.name).toLowerCase();
+      if (['.png', '.jpg', '.jpeg'].includes(ext) && !CONFIG.skipFiles.includes(file.name)) {
+        fileList.push(filePath);
+      }
+    }
+  }
+
+  return fileList;
+}
+
+/**
  * Main optimization function
  */
 async function optimizeImages(mode = 'standard') {
   console.log('🚀 Image Optimization Script');
   console.log('============================');
   console.log(`Mode: ${mode.toUpperCase()}`);
-  console.log(`Directory: ${CONFIG.imagesDir}\n`);
+  console.log(`Directory: ${CONFIG.imagesDir} (recursive)\n`);
 
   const quality = CONFIG[mode] || CONFIG.standard;
 
   try {
-    // Get all files in images directory
-    const files = await fs.readdir(CONFIG.imagesDir);
-    const imageFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ['.png', '.jpg', '.jpeg'].includes(ext) &&
-             !CONFIG.skipFiles.includes(file);
-    });
+    // Recursively find all image files
+    const imageFiles = await findImageFiles(CONFIG.imagesDir);
 
     console.log(`Found ${imageFiles.length} images to process\n`);
 
     // Process each image
-    for (const file of imageFiles) {
-      const filePath = path.join(CONFIG.imagesDir, file);
-      await processImage(filePath, quality);
+    for (const filePath of imageFiles) {
+      const relativePath = path.relative(CONFIG.imagesDir, filePath);
+      const dirPath = path.dirname(relativePath);
+      console.log(`\n📂 ${dirPath === '.' ? 'root' : dirPath}`);
+      await processImage(filePath, quality, CONFIG.imagesDir, CONFIG.backupDir);
     }
 
     // Print summary

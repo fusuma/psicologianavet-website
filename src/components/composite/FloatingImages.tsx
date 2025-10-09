@@ -2,7 +2,32 @@
 
 import { motion, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+// All available toy images
+const TOY_IMAGES = [
+  'ball.png',
+  'bone.png',
+  'cat.png',
+  'cloud.png',
+  'color-bone-2.png',
+  'color-bone.png',
+  'dog.png',
+  'fish.png',
+  'fox.png',
+  'heart.png',
+  'knot.png',
+  'mice.png',
+  'rabbit.png',
+];
+
+/**
+ * Randomly selects N unique items from an array
+ */
+function selectRandomImages(count: number): string[] {
+  const shuffled = [...TOY_IMAGES].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
 
 /**
  * FloatingImages Component
@@ -10,6 +35,7 @@ import { useEffect, useRef } from 'react';
  * Displays decorative pet-themed images with advanced scroll-triggered parallax effects.
  *
  * Features:
+ * - Random image selection from toys folder on each page load
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
  * - Proximity-based opacity (images become more visible when mouse is closer)
@@ -22,6 +48,12 @@ import { useEffect, useRef } from 'react';
  * - Provides smooth transition to proximity-based opacity calculations
  */
 export function FloatingImages() {
+  // Randomly select 4 unique images on component mount
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    setSelectedImages(selectRandomImages(4));
+  }, []);
   const { scrollYProgress } = useScroll();
 
   // Mouse position tracking for proximity-based opacity
@@ -103,6 +135,12 @@ export function FloatingImages() {
   const heartScale = useTransform(heartOpacity, [0.4, 0.6], [0.95, 1.0]);
   const boneScale = useTransform(boneOpacity, [0.5, 0.6], [0.95, 1.0]);
 
+  // Filter transforms - convert blur values to CSS filter strings
+  const ballFilter = useTransform(ballBlur, (b) => `blur(${b}px)`);
+  const miceFilter = useTransform(miceBlur, (b) => `blur(${b}px)`);
+  const heartFilter = useTransform(heartBlur, (b) => `blur(${b}px)`);
+  const boneFilter = useTransform(boneBlur, (b) => `blur(${b}px)`);
+
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
     let hasTriggeredFadeIn = false;
@@ -135,9 +173,14 @@ export function FloatingImages() {
     };
   }, [mouseX, mouseY, scrollTrigger, hasMouseMoved, fadeInProgress]);
 
+  // Don't render until images are selected
+  if (selectedImages.length !== 4) {
+    return <div className="fixed inset-0 z-0 pointer-events-none" />;
+  }
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
-      {/* Ball - Upper Right */}
+      {/* Position 1 - Upper Right */}
       <motion.div
         ref={ballRef}
         className="absolute top-[5%] right-[-6%] md:right-[-6%] pointer-events-none"
@@ -145,11 +188,11 @@ export function FloatingImages() {
           y: y1,
           opacity: ballOpacity,
           scale: ballScale,
-          filter: useTransform(ballBlur, (b) => `blur(${b}px)`),
+          filter: ballFilter,
         }}
       >
         <Image
-          src="/images/ball.png"
+          src={`/images/toys/${selectedImages[0]}`}
           alt=""
           width={200}
           height={200}
@@ -158,7 +201,7 @@ export function FloatingImages() {
         />
       </motion.div>
 
-      {/* Mice - Middle Left */}
+      {/* Position 2 - Middle Left */}
       <motion.div
         ref={miceRef}
         className="absolute top-[30%] left-[-8%] pointer-events-none"
@@ -166,11 +209,11 @@ export function FloatingImages() {
           y: y3,
           opacity: miceOpacity,
           scale: miceScale,
-          filter: useTransform(miceBlur, (b) => `blur(${b}px)`),
+          filter: miceFilter,
         }}
       >
         <Image
-          src="/images/mice.png"
+          src={`/images/toys/${selectedImages[1]}`}
           alt=""
           width={200}
           height={200}
@@ -179,7 +222,7 @@ export function FloatingImages() {
         />
       </motion.div>
 
-      {/* Heart - Bottom Left */}
+      {/* Position 3 - Bottom Left */}
       <motion.div
         ref={heartRef}
         className="absolute top-[75%] left-[1%] pointer-events-none"
@@ -187,11 +230,11 @@ export function FloatingImages() {
           y: y2,
           opacity: heartOpacity,
           scale: heartScale,
-          filter: useTransform(heartBlur, (b) => `blur(${b}px)`),
+          filter: heartFilter,
         }}
       >
         <Image
-          src="/images/heart.png"
+          src={`/images/toys/${selectedImages[2]}`}
           alt=""
           width={180}
           height={180}
@@ -200,7 +243,7 @@ export function FloatingImages() {
         />
       </motion.div>
 
-      {/* Bone - Bottom Right */}
+      {/* Position 4 - Bottom Right */}
       <motion.div
         ref={boneRef}
         className="absolute top-[75%] right-[1%] pointer-events-none"
@@ -208,11 +251,11 @@ export function FloatingImages() {
           y: y4,
           opacity: boneOpacity,
           scale: boneScale,
-          filter: useTransform(boneBlur, (b) => `blur(${b}px)`),
+          filter: boneFilter,
         }}
       >
         <Image
-          src="/images/bone.png"
+          src={`/images/toys/${selectedImages[3]}`}
           alt=""
           width={200}
           height={200}
