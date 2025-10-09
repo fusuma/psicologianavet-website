@@ -83,10 +83,16 @@ export function FloatingImages() {
   );
 
   // Blur transforms - inversely proportional to opacity (more blur when less visible)
-  const ballBlur = useTransform(ballOpacity, [0.3, 0.6], [8, 0]);
-  const miceBlur = useTransform(miceOpacity, [0.25, 0.6], [10, 0]);
-  const heartBlur = useTransform(heartOpacity, [0.25, 0.6], [10, 0]);
-  const boneBlur = useTransform(boneOpacity, [0.2, 0.6], [12, 0]);
+  const ballBlur = useTransform(ballOpacity, [0.3, 0.6], [5.6, 0]);
+  const miceBlur = useTransform(miceOpacity, [0.25, 0.6], [7, 0]);
+  const heartBlur = useTransform(heartOpacity, [0.25, 0.6], [7, 0]);
+  const boneBlur = useTransform(boneOpacity, [0.2, 0.6], [8.4, 0]);
+
+  // Scale transforms - proportional to opacity (smaller when faded)
+  const ballScale = useTransform(ballOpacity, [0.3, 0.6], [0.8, 1.0]);
+  const miceScale = useTransform(miceOpacity, [0.25, 0.6], [0.8, 1.0]);
+  const heartScale = useTransform(heartOpacity, [0.25, 0.6], [0.8, 1.0]);
+  const boneScale = useTransform(boneOpacity, [0.2, 0.6], [0.8, 1.0]);
 
   // Mouse tracking for proximity-based opacity
   useEffect(() => {
@@ -110,18 +116,19 @@ export function FloatingImages() {
   }, [mouseX, mouseY, scrollTrigger]);
 
   return (
-    <>
+    <div className="fixed inset-0 z-0 pointer-events-none">
       {/* Ball - Upper Right */}
       <motion.div
         ref={ballRef}
-        className="absolute top-[25%] right-[1%] z-0 pointer-events-none"
+        className="absolute top-[15%] right-[-15%] md:right-[-8%] pointer-events-none"
         style={{
           y: y1,
           opacity: ballOpacity,
+          scale: ballScale,
           filter: useTransform(ballBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.3, scale: 1 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.3 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
@@ -138,14 +145,15 @@ export function FloatingImages() {
       {/* Mice - Middle Left */}
       <motion.div
         ref={miceRef}
-        className="absolute top-[50%] left-[1%] z-0 pointer-events-none"
+        className="absolute top-[50%] left-[-8%] pointer-events-none"
         style={{
           y: y3,
           opacity: miceOpacity,
+          scale: miceScale,
           filter: useTransform(miceBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0, x: -50 }}
-        whileInView={{ opacity: 0.25, x: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.25 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
       >
@@ -162,14 +170,15 @@ export function FloatingImages() {
       {/* Heart - Bottom Left */}
       <motion.div
         ref={heartRef}
-        className="absolute top-[90%] left-[1%] z-0 pointer-events-none"
+        className="absolute top-[75%] left-[1%] pointer-events-none"
         style={{
           y: y2,
           opacity: heartOpacity,
+          scale: heartScale,
           filter: useTransform(heartBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.25, scale: 1 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.25 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
       >
@@ -186,14 +195,15 @@ export function FloatingImages() {
       {/* Bone - Bottom Right */}
       <motion.div
         ref={boneRef}
-        className="absolute top-[75%] right-[1%] z-0 pointer-events-none"
+        className="absolute top-[75%] right-[1%] pointer-events-none"
         style={{
           y: y4,
           opacity: boneOpacity,
+          scale: boneScale,
           filter: useTransform(boneBlur, (b) => `blur(${b}px)`),
         }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.2, scale: 1 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.2 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6, delay: 0.25, ease: 'easeOut' }}
       >
@@ -206,6 +216,6 @@ export function FloatingImages() {
           priority={false}
         />
       </motion.div>
-    </>
+    </div>
   );
 }
