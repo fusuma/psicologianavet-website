@@ -5,8 +5,16 @@ import { z } from 'zod';
  * This is the single source of truth for subscription data validation.
  */
 export const subscriptionPayloadSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().email({ message: "Email inválido." }),
   listName: z.enum(['tutors', 'vets']),
+
+  // Clinic name - REQUIRED for vets, collected upfront for PDF personalization
+  clinicName: z.string()
+    .min(2, { message: "Nome da clínica deve ter pelo menos 2 caracteres." })
+    .max(100, { message: "Nome da clínica deve ter no máximo 100 caracteres." })
+    .regex(/^[a-zA-ZÀ-ÿ0-9\s\-'\.]+$/, { message: "Nome da clínica contém caracteres inválidos." })
+    .trim()
+    .optional(), // Optional in schema, but enforced via refine for vets
 
   // Multi-layer bot detection fields
   // Layer 1: Decoy fields (should remain empty)
@@ -22,7 +30,20 @@ export const subscriptionPayloadSchema = z.object({
   interactionCount: z.number().int().min(0), // Number of user interactions
   hasFocusEvents: z.boolean(), // Did user focus on email field?
   hasMouseMovement: z.boolean(), // Was mouse movement detected?
-});
+})
+  .refine(
+    (data) => {
+      // CRITICAL: Clinic name is REQUIRED for vets to enable PDF personalization
+      if (data.listName === 'vets') {
+        return !!data.clinicName && data.clinicName.trim().length >= 2;
+      }
+      return true;
+    },
+    {
+      message: "Nome da clínica é obrigatório para veterinários.",
+      path: ['clinicName'],
+    }
+  );
 
 /**
  * TypeScript type inferred from subscriptionPayloadSchema.

@@ -2,6 +2,7 @@ import * as brevo from '@getbrevo/brevo';
 import { subscriptionPayloadSchema, type SubscriptionPayload } from '@/shared/schemas';
 import { getBotDetectionConfig, BotDetectionReason } from '@/config/botDetection';
 import { logBotDetection, logLegitimateSubmission } from '@/utils/botDetectionLogger';
+import { personalizePDF } from './pdfPersonalization';
 
 /**
  * Custom error for validation failures (including honeypot detection).
@@ -61,11 +62,20 @@ function validateEnvironment(): void {
 validateEnvironment();
 
 /**
- * Initialize Brevo API client with API key from environment.
+ * Initialize Brevo Contacts API client with API key from environment.
  */
 const apiInstance = new brevo.ContactsApi();
 apiInstance.setApiKey(
   brevo.ContactsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY as string
+);
+
+/**
+ * Initialize Brevo Transactional Email API for sending personalized PDFs.
+ */
+const emailApi = new brevo.TransactionalEmailsApi();
+emailApi.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
   process.env.BREVO_API_KEY as string
 );
 
@@ -76,6 +86,61 @@ const listIdMap: Record<'tutors' | 'vets', string> = {
   tutors: process.env.BREVO_TUTORS_LIST_ID as string,
   vets: process.env.BREVO_VETS_LIST_ID as string,
 };
+
+/**
+ * Sanitize clinic name for use in filename
+ */
+function sanitizeClinicNameForFilename(clinicName: string): string {
+  return clinicName
+    .toLowerCase()
+    .normalize('NFD') // Decompose accented characters
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[^a-z0-9-]/g, '-') // Replace invalid chars with hyphen
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .substring(0, 50); // Limit length
+}
+
+/**
+ * Send welcome email with personalized PDF attachment to veterinarian
+ */
+async function sendWelcomeEmailWithPDF(
+  email: string,
+  clinicName: string,
+  pdfBuffer: Buffer
+): Promise<void> {
+  const templateId = process.env.BREVO_VET_WELCOME_TEMPLATE_ID;
+
+  if (!templateId) {
+    console.warn('BREVO_VET_WELCOME_TEMPLATE_ID not set, skipping email with PDF');
+    return;
+  }
+
+  const emailPayload = new brevo.SendSmtpEmail();
+  emailPayload.to = [{ email }];
+  emailPayload.templateId = parseInt(templateId, 10);
+  emailPayload.params = {
+    CLINIC_NAME: clinicName,
+    DOWNLOAD_LINK: `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/v1/pdf/download`, // Fallback link
+  };
+
+  // Sanitize filename for attachment
+  const safeFileName = sanitizeClinicNameForFilename(clinicName);
+  emailPayload.attachment = [
+    {
+      content: pdfBuffer.toString('base64'),
+      name: `material-apoio-${safeFileName}.pdf`,
+    },
+  ];
+
+  try {
+    await emailApi.sendTransacEmail(emailPayload);
+    console.log('Welcome email with PDF sent successfully:', { email, clinicName });
+  } catch (error) {
+    console.error('Failed to send welcome email with PDF:', error);
+    throw new Error('Email delivery failed');
+  }
+}
 
 /**
  * Subscribes a user to the specified mailing list.
@@ -186,6 +251,15 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
   createContact.email = validated.email;
   createContact.listIds = [parseInt(listId, 10)];
 
+  // Add clinic name as attribute for vets (enables future personalization)
+  if (validated.listName === 'vets' && validated.clinicName) {
+    createContact.attributes = {
+      CLINIC_NAME: validated.clinicName,
+      SUBSCRIBED_AT: new Date().toISOString(),
+      PDF_SENT: false, // Will be updated after PDF is sent
+    };
+  }
+
   try {
     await apiInstance.createContact(createContact);
 
@@ -198,6 +272,36 @@ export async function subscribe(payload: SubscriptionPayload): Promise<void> {
       hasFocusEvents: validated.hasFocusEvents,
       hasMouseMovement: validated.hasMouseMovement,
     });
+
+    // For vets: Generate personalized PDF and send via email
+    if (validated.listName === 'vets' && validated.clinicName) {
+      try {
+        console.log('Generating personalized PDF for:', { email: validated.email, clinicName: validated.clinicName });
+
+        // Generate personalized PDF
+        const pdfBuffer = await personalizePDF(validated.clinicName);
+
+        // Send welcome email with PDF attachment
+        await sendWelcomeEmailWithPDF(validated.email, validated.clinicName, pdfBuffer);
+
+        // Update Brevo contact attribute to mark PDF as sent
+        try {
+          await apiInstance.updateContact(validated.email, {
+            attributes: { PDF_SENT: true },
+          });
+        } catch (updateError) {
+          // Log but don't fail if attribute update fails
+          console.warn('Failed to update PDF_SENT attribute:', updateError);
+        }
+
+        console.log('PDF personalization and email delivery successful');
+      } catch (pdfError) {
+        // Log error but don't fail the subscription
+        // User is already added to the list, PDF failure shouldn't break that
+        console.error('PDF generation or email failed:', pdfError);
+        // TODO: Implement fallback - send email with download link instead
+      }
+    }
   } catch (error: unknown) {
     // Log full error object to understand its structure
     console.error('Raw Brevo error:', {

@@ -86,10 +86,28 @@ interface ApiError {
 
 ### Brevo Integration
 
-Email list management via `@getbrevo/brevo` SDK:
-- **Environment Variables**: `BREVO_API_KEY`, `BREVO_TUTORS_LIST_ID`, `BREVO_VETS_LIST_ID`
-- **Service**: `src/services/subscriptionService.ts`
+Email list management and transactional emails via `@getbrevo/brevo` SDK:
+- **Environment Variables**: `BREVO_API_KEY`, `BREVO_TUTORS_LIST_ID`, `BREVO_VETS_LIST_ID`, `BREVO_VET_WELCOME_TEMPLATE_ID`
+- **Services**:
+  - `src/services/subscriptionService.ts` (list management, bot detection)
+  - `src/services/pdfPersonalization.ts` (PDF generation, watermarking)
 - **Error Mapping**: Brevo's `duplicate_parameter` → `EmailExistsError` → 409 Conflict response
+
+### PDF Personalization System
+
+Veterinarians receive personalized support material PDFs via email upon subscription:
+
+1. **Dynamic PDF Generation**: Uses `pdf-lib` to replace clinic name on template PDF
+2. **Transactional Email Delivery**: Sends personalized PDF as email attachment via Brevo
+3. **Graceful Degradation**: Falls back to download links if PDF generation fails
+4. **Optional Watermarking**: Tracks PDF distribution with metadata
+
+**Key Files**:
+- Template: `public/assets/apoio-momentos-dificeis.pdf`
+- Fonts: `public/fonts/FiraSans-Bold.ttf`, `public/fonts/FiraSans-Regular.ttf`
+- Service: `src/services/pdfPersonalization.ts`
+
+**Performance**: 2-4s response time for vets (includes PDF generation), ~500ms for tutors
 
 ## Critical Files
 
@@ -97,6 +115,7 @@ Email list management via `@getbrevo/brevo` SDK:
 |------|---------|
 | `src/shared/schemas.ts` | **Single source of truth** for all data schemas (Zod) and types |
 | `src/services/subscriptionService.ts` | Core business logic for email subscriptions and bot detection |
+| `src/services/pdfPersonalization.ts` | PDF generation and watermarking for vet subscriptions |
 | `src/components/composite/SignupForm.tsx` | Reusable signup form with bot detection tracking |
 | `src/config/botDetection.ts` | Centralized bot detection configuration |
 | `docs/architecture/coding-standards.md` | Complete coding standards (TypeScript, React, testing, accessibility) |
@@ -203,6 +222,10 @@ docs(readme): update installation instructions
 ## Important Documentation
 
 - **Architecture**: `docs/architecture.md` - Complete fullstack architecture
+- **PDF Integration**: `docs/architecture/15-pdf-personalization-integration.md` - PDF personalization & Brevo email integration
+- **Integration Diagrams**: `docs/architecture/pdf-integration-diagrams.md` - Visual system diagrams
+- **Quick Start**: `docs/pdf-integration-quickstart.md` - Step-by-step implementation guide
+- **UX Guide**: `docs/ux-vet-signup-form.md` - Form design and conversion optimization
 - **Tech Stack**: `docs/architecture/tech-stack.md` - Technology decisions and versions
 - **Coding Standards**: `docs/architecture/coding-standards.md` - Comprehensive coding guidelines
 - **Bot Detection**: `docs/bot-detection-quick-reference.md` - Bot detection monitoring guide
