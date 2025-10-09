@@ -73,6 +73,9 @@
     --background: 250 37% 12%; /* Primary Dark: #191723 */
     --foreground: 181 57.28% 37.22%; /* Primary Green */
     --foreground-hover: 181 57.28% 47.22%; /* Brighter Green for hover */
+    --scrollbar-thumb: 181 57.28% 37.22%; /* Green scrollbar */
+    --scrollbar-thumb-hover: 181 57.28% 47.22%; /* Brighter Green scrollbar hover */
+    --scrollbar-track: 181 57.28% 37.22%; /* Green track */
   }
 
   .theme-green {
@@ -80,6 +83,9 @@
     --foreground: 250 37% 12%; /* Primary Dark: #191723 */
     --foreground-hover: 181 57.28% 47.22%; /* Brighter Green for hover */
     --foreground-link-hover: 250 37% 30%; /* Lighter Dark Blue for link hover */
+    --scrollbar-thumb: 250 37% 12%; /* Dark scrollbar */
+    --scrollbar-thumb-hover: 250 37% 22%; /* Lighter dark scrollbar hover */
+    --scrollbar-track: 250 37% 12%; /* Dark track */
   }
 }
 
@@ -87,8 +93,38 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-y: scroll; /* Always show scrollbar to prevent layout shift */
+    scrollbar-gutter: stable; /* Reserve space for scrollbar */
+  }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Custom minimal scrollbar styling */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--scrollbar-thumb, 181 57.28% 37.22%)) hsl(var(--scrollbar-track, 250 37% 12%) / 0.1);
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  html::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-track, 250 37% 12%) / 0.1);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--scrollbar-thumb, 181 57.28% 37.22%));
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--scrollbar-thumb-hover, 181 57.28% 47.22%));
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-castoro), serif;

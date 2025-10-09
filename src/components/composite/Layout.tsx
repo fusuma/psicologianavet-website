@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode, ReactElement } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,6 +23,7 @@ interface LayoutProps {
  * Supports 'dark' and 'green' themes based on the section (Tutors vs Vets).
  */
 export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement {
+
   return (
     <div className={cn(
       'min-h-screen flex flex-col bg-background text-foreground',
