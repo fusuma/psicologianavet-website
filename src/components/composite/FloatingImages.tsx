@@ -52,7 +52,7 @@ export function FloatingImages() {
 
   // Helper function to calculate opacity based on Y proximity only
   const calculateProximityOpacity = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     mx: number,
     my: number,
     baseOpacity: number,
