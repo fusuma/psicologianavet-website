@@ -18,11 +18,8 @@ export default function Home(): ReactElement {
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[50vh] space-y-8">
         {/* Hero Section */}
         <section className="text-center space-y-4 max-w-4xl px-4">
-          <h2 className="text-[2rem] font-heading">
-            Se hoje há dor,
-          </h2>
           <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
-            é porque ontem houve amor.
+            há laços que nem a ausência desfaz
           </h1>
           <div className="flex justify-center py-2">
             <Image
