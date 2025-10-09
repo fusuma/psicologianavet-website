@@ -45,6 +45,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
     resolver: zodResolver(subscriptionPayloadSchema),
     defaultValues: {
       email: '',
+      clinicName: '', // Required for vets, empty for tutors
       listName,
       // Honeypot fields (should remain empty)
       website: '',
@@ -125,8 +126,11 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
         }
       } else {
         // Success - message varies by theme/audience
+        const clinicName = data.clinicName;
         const message = theme === 'dark'
           ? 'Obrigado! Verifique seu e-mail para baixar o mini caderno gratuito.'
+          : clinicName
+          ? `Cadastro realizado! Verifique seu e-mail para receber o material de apoio personalizado para ${clinicName}.`
           : 'Obrigado! Verifique seu e-mail para acessar o material de apoio gratuito.';
         setSuccessMessage(message);
         form.reset();
@@ -180,6 +184,7 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
                         : 'bg-[#1f7d7e] text-white border-[#1a6768] placeholder:text-gray-300'
                     )}
                     aria-required="true"
+                    autoComplete="email"
                     {...field}
                     onFocus={() => {
                       setHasFocusEvents(true);
@@ -195,6 +200,45 @@ export function SignupForm({ theme = 'dark' }: SignupFormProps): ReactElement {
               </FormItem>
             )}
           />
+
+          {/* Clinic Name Input Field - ONLY for Vets (green theme) */}
+          {theme === 'green' && (
+            <FormField
+              control={form.control}
+              name="clinicName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-white">
+                    Nome da Clínica *
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Ex: Clínica Veterinária São Francisco"
+                      className="bg-[#1f7d7e] text-white border-[#1a6768] placeholder:text-gray-300"
+                      aria-required="true"
+                      required
+                      minLength={2}
+                      maxLength={100}
+                      autoComplete="organization"
+                      {...field}
+                      onFocus={() => {
+                        setInteractionCount(prev => prev + 1);
+                      }}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setInteractionCount(prev => prev + 1);
+                      }}
+                    />
+                  </FormControl>
+                  <p className="text-xs text-white/70 mt-1">
+                    Você receberá o material com o nome da sua clínica
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {/* Honeypot Fields (Bot Protection) - These should remain invisible and empty */}
           <div style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
