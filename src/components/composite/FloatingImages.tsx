@@ -38,21 +38,34 @@ function selectRandomImages(count: number): string[] {
  * - Random image selection from toys folder on each page load
  * - GSAP-style scroll parallax (each image moves at different speeds)
  * - Scroll-linked fade effect (images fade as you scroll)
- * - Proximity-based opacity (images become more visible when mouse is closer)
+ * - Proximity-based opacity (images become more visible when mouse is closer - desktop only)
  * - Staggered entrance animations with smart activation
  * - Responsive sizing (larger on desktop, smaller on mobile)
  *
- * Smart animation activation:
+ * Performance optimizations:
+ * - Mobile: Simplified effects for 60fps scrolling (no proximity calc, blur, or scale)
+ * - Desktop: Full effects with proximity-based opacity, blur, and scale
+ * - Smart animation activation based on device type
+ *
+ * Activation behavior:
  * - Desktop: Triggers on first mouse movement (preserves anti-flicker)
- * - Mobile: Triggers immediately via touch or auto-starts after 100ms
- * - Ensures smooth fade-in on all devices without waiting for interaction
+ * - Mobile: Auto-starts after 100ms for immediate visibility
  */
 export function FloatingImages() {
   // Randomly select 4 unique images on component mount
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setSelectedImages(selectRandomImages(4));
+
+    // Detect mobile devices
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   const { scrollYProgress } = useScroll();
 
@@ -107,20 +120,21 @@ export function FloatingImages() {
 
   // Proximity-based opacity transforms (update on mouse move AND scroll)
   // Multiplied by fadeInProgress to enable smooth fade-in on first mouse movement
+  // On mobile: use simple static opacity multiplied by fadeInProgress
   const ballOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
-    calculateProximityOpacity(ballRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
+    isMobile ? 0.5 * (fadeIn as number) : calculateProximityOpacity(ballRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
   const miceOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
-    calculateProximityOpacity(miceRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
+    isMobile ? 0.45 * (fadeIn as number) : calculateProximityOpacity(miceRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
   const heartOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
-    calculateProximityOpacity(heartRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
+    isMobile ? 0.45 * (fadeIn as number) : calculateProximityOpacity(heartRef, mx as number, my as number, 0.4, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
   const boneOpacity = useTransform([mouseX, mouseY, scrollTrigger, scrollYProgress, hasMouseMoved, fadeInProgress], ([mx, my, _, scroll, moved, fadeIn]) =>
-    calculateProximityOpacity(boneRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
+    isMobile ? 0.5 * (fadeIn as number) : calculateProximityOpacity(boneRef, mx as number, my as number, 0.5, 0.6, scroll as number, moved as number) * (fadeIn as number)
   );
 
   // Blur transforms - inversely proportional to opacity (more blur when less visible)
@@ -167,8 +181,10 @@ export function FloatingImages() {
     };
 
     const handleScroll = () => {
-      // Trigger recalculation by updating scrollTrigger
-      scrollTrigger.set(Math.random());
+      // Trigger recalculation by updating scrollTrigger (only on desktop)
+      if (!isMobile) {
+        scrollTrigger.set(Math.random());
+      }
     };
 
     // Auto-start after 100ms if no interaction (for mobile devices without touch events)
@@ -178,15 +194,21 @@ export function FloatingImages() {
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Only add scroll listener on desktop for proximity calculations
+    if (!isMobile) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
 
     return () => {
       if (autoStartTimer) clearTimeout(autoStartTimer);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('scroll', handleScroll);
+      if (!isMobile) {
+        window.removeEventListener('scroll', handleScroll);
+      }
     };
-  }, [mouseX, mouseY, scrollTrigger, hasMouseMoved, fadeInProgress]);
+  }, [mouseX, mouseY, scrollTrigger, hasMouseMoved, fadeInProgress, isMobile]);
 
   // Don't render until images are selected
   if (selectedImages.length !== 4) {
@@ -198,12 +220,11 @@ export function FloatingImages() {
       {/* Position 1 - Upper Right */}
       <motion.div
         ref={ballRef}
-        className="absolute top-[5%] right-[-6%] md:right-[-6%] pointer-events-none"
+        className="absolute top-[5%] right-[-6%] md:right-[-6%] pointer-events-none will-change-transform"
         style={{
           y: y1,
           opacity: ballOpacity,
-          scale: ballScale,
-          filter: ballFilter,
+          ...(isMobile ? {} : { scale: ballScale, filter: ballFilter }),
         }}
       >
         <Image
@@ -219,12 +240,11 @@ export function FloatingImages() {
       {/* Position 2 - Middle Left */}
       <motion.div
         ref={miceRef}
-        className="absolute top-[30%] left-[-8%] pointer-events-none"
+        className="absolute top-[30%] left-[-8%] pointer-events-none will-change-transform"
         style={{
           y: y3,
           opacity: miceOpacity,
-          scale: miceScale,
-          filter: miceFilter,
+          ...(isMobile ? {} : { scale: miceScale, filter: miceFilter }),
         }}
       >
         <Image
@@ -240,12 +260,11 @@ export function FloatingImages() {
       {/* Position 3 - Bottom Left */}
       <motion.div
         ref={heartRef}
-        className="absolute top-[75%] left-[1%] pointer-events-none"
+        className="absolute top-[75%] left-[1%] pointer-events-none will-change-transform"
         style={{
           y: y2,
           opacity: heartOpacity,
-          scale: heartScale,
-          filter: heartFilter,
+          ...(isMobile ? {} : { scale: heartScale, filter: heartFilter }),
         }}
       >
         <Image
@@ -261,12 +280,11 @@ export function FloatingImages() {
       {/* Position 4 - Bottom Right */}
       <motion.div
         ref={boneRef}
-        className="absolute top-[75%] right-[1%] pointer-events-none"
+        className="absolute top-[75%] right-[1%] pointer-events-none will-change-transform"
         style={{
           y: y4,
           opacity: boneOpacity,
-          scale: boneScale,
-          filter: boneFilter,
+          ...(isMobile ? {} : { scale: boneScale, filter: boneFilter }),
         }}
       >
         <Image
