@@ -8,7 +8,7 @@ import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
 import { TestimonialsCarousel } from '@/components/composite/TestimonialsCarousel';
 import { Button } from '@/components/ui/button';
-import { HotmartButton } from '@/components/composite/HotmartButton';
+import { RainbowButton } from '@/components/ui/rainbow-button';
 
 export const metadata: Metadata = {
   title: 'Parceiros Veterinários | Quando um amor se vai',
@@ -52,7 +52,18 @@ export default function VetsPage(): ReactElement {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
                 <div className="flex flex-col items-center gap-6">
                   <TiltingBookCover />
-                  <HotmartButton href="https://hotmart.com" theme="green" />
+                  <RainbowButton size="lg" asChild>
+                    <Link href="https://hotmart.com/pt-br/marketplace/produtos/quando-um-amor-se-vai-compreendendo-e-acolhendo-o-luto-pela-perda-do-animal-de-estimacao/U102325292F" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                      <Image
+                        src="/images/hotmart-flame-icon.svg"
+                        alt="Hotmart"
+                        width={20}
+                        height={20}
+                        className="shrink-0"
+                      />
+                      <span>Comprar no Hotmart</span>
+                    </Link>
+                  </RainbowButton>
                 </div>
                 <div className="space-y-6 text-left">
                   <p className="text-white">
@@ -77,7 +88,7 @@ export default function VetsPage(): ReactElement {
 
                   <p className="text-white">
                     Desenvolvido por <strong className="text-foreground">Gisele Schneider</strong>, psicóloga
-                    especialista em luto e vínculo humano-animal, este ebook oferece as palavras certas
+                    especialista em luto, este ebook oferece as palavras certas
                     nos momentos em que mais importam — complementando o cuidado clínico que você já presta.
                   </p>
                 </div>

@@ -1,15 +1,16 @@
 import type { ReactElement } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Layout } from '@/components/composite/Layout';
 import { SignupForm } from '@/components/composite/SignupForm';
 import { FloatingImages } from '@/components/composite/FloatingImages';
 import { TiltingBookCover } from '@/components/composite/TiltingBookCover';
-import { HotmartButton } from '@/components/composite/HotmartButton';
+import { RainbowButton } from '@/components/ui/rainbow-button';
 
 export const metadata: Metadata = {
   title: 'Para Tutores - Quando um amor se vai',
-  description: 'Honre o amor que vocês compartilharam. Um guia psicológico para tutores que buscam apoio gentil no processo de luto pela perda de um pet.',
+  description: 'Um espaço para compreender, sentir e recomeçar.',
 };
 
 export default function TutorsPage(): ReactElement {
@@ -20,8 +21,11 @@ export default function TutorsPage(): ReactElement {
         <section className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto">
         {/* Hero Section */}
         <div className="w-full text-center mb-12 md:mb-16">
+          <h2 className="mb-4 text-foreground/80" style={{ fontSize: '2rem' }}>
+            Um espaço para
+          </h2>
           <h1 className="text-3xl md:text-4xl lg:text-5xl mb-8 text-foreground">
-            Honre o Amor que Vocês Compartilharam
+            compreender, sentir e recomeçar.
           </h1>
           <div className="flex justify-center py-2">
             <Image
@@ -50,11 +54,11 @@ export default function TutorsPage(): ReactElement {
               </li>
               <li className="flex items-start">
                 <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Quer honrar as memórias sem se sentir culpado por seguir em frente</span>
+                <span className="text-white">Quer honrar as suas memórias</span>
               </li>
               <li className="flex items-start">
                 <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Busca um caminho gentil para transformar a dor em gratidão</span>
+                <span className="text-white">Busca um caminho gentil para transformar a sua dor</span>
               </li>
             </ul>
           </div>
@@ -62,13 +66,24 @@ export default function TutorsPage(): ReactElement {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="flex flex-col items-center gap-6">
               <TiltingBookCover />
-              <HotmartButton href="https://hotmart.com" />
+              <RainbowButton size="lg" asChild>
+                <Link href="https://hotmart.com/pt-br/marketplace/produtos/quando-um-amor-se-vai-compreendendo-e-acolhendo-o-luto-pela-perda-do-animal-de-estimacao/U102325292F" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  <Image
+                    src="/images/hotmart-flame-icon.svg"
+                    alt="Hotmart"
+                    width={20}
+                    height={20}
+                    className="shrink-0"
+                  />
+                  <span>Comprar no Hotmart</span>
+                </Link>
+              </RainbowButton>
             </div>
             <div className="space-y-4">
               <p className="text-white">
                 <strong className="text-foreground">Quando um amor se vai</strong> é um ebook desenvolvido
                 por <strong className="text-foreground">Gisele Schneider</strong>, psicóloga especialista
-                em luto e vínculo humano-animal.
+                em luto.
               </p>
               <p className="text-white">
                 Este material oferece ferramentas gentis e práticas para navegar o luto, honrar memórias preciosas,
