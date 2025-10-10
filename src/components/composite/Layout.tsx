@@ -13,6 +13,11 @@ interface LayoutProps {
    */
   theme?: 'dark' | 'green';
   /**
+   * Whether the logo should be a clickable link
+   * @default true
+   */
+  logoAsLink?: boolean;
+  /**
    * The content to be rendered within the layout
    */
   children: ReactNode;
@@ -22,7 +27,7 @@ interface LayoutProps {
  * Layout component provides a themeable page structure with header, main content area, and footer.
  * Supports 'dark' and 'green' themes based on the section (Tutors vs Vets).
  */
-export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement {
+export function Layout({ theme = 'dark', logoAsLink = true, children }: LayoutProps): ReactElement {
 
   return (
     <div className={cn(
@@ -31,7 +36,18 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
     )}>
       <header className="w-full px-4 py-6 md:px-8 md:py-8" role="banner">
         <nav className="flex justify-center" role="navigation" aria-label="Main navigation">
-          <Link href="/" className="transition-opacity hover:opacity-80">
+          {logoAsLink ? (
+            <Link href="/" className="transition-all hover:opacity-80 hover:scale-105">
+              <Image
+                src={theme === 'green' ? '/images/psicologianavet-light.png' : '/images/psicologianavet.png'}
+                alt="Psicologia na Vet"
+                width={200}
+                height={60}
+                className="h-12 w-auto md:h-14"
+                priority
+              />
+            </Link>
+          ) : (
             <Image
               src={theme === 'green' ? '/images/psicologianavet-light.png' : '/images/psicologianavet.png'}
               alt="Psicologia na Vet"
@@ -40,7 +56,7 @@ export function Layout({ theme = 'dark', children }: LayoutProps): ReactElement 
               className="h-12 w-auto md:h-14"
               priority
             />
-          </Link>
+          )}
         </nav>
       </header>
 

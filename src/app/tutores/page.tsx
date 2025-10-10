@@ -21,6 +21,7 @@ export default function TutorsPage(): ReactElement {
         <section className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto">
         {/* Hero Section */}
         <div className="w-full text-center mb-12 md:mb-16">
+           
           <h2 className="mb-4 text-foreground/80" style={{ fontSize: '2rem' }}>
             Um espaço para
           </h2>
@@ -35,38 +36,41 @@ export default function TutorsPage(): ReactElement {
               height={80}
               className="h-4 w-auto opacity-100"
             />
-          </div>
+          </div>         
         </div>
 
         {/* Main Content */}
         <div className="w-full space-y-8 text-lg md:text-xl leading-relaxed">
-          <p className="text-white">
-            Todo animal que passa pela nossa vida deixa marcas de amor incondicional, alegria e aprendizado. Quando um amor se vai, a dor que sentimos é a medida exata do amor que vivemos.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="w-full p-8 md:p-12">
+              <p className="text-white  pb-8">Todo animal que passa pela nossa vida deixa marcas de amor incondicional, alegria e aprendizado.</p>
+              <p className="text-white">Quando um amor se vai, a dor que sentimos é a medida exata do amor que vivemos.</p>
+            </div>
+            <div className="w-full p-8 md:p-12 bg-black/20 rounded-lg border border-primary/20">
+              <p className="text-white pb-8">Este espaço é para você que:</p>
 
-          <div className="space-y-6">
-            <p className="text-white">Este espaço é para você que:</p>
-
-            <ul className="list-none space-y-4 pl-0">
-              <li className="flex items-start">
-                <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Sente que ninguém compreende a profundidade da sua dor</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Quer honrar as suas memórias</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-foreground mr-3 flex-shrink-0">•</span>
-                <span className="text-white">Busca um caminho gentil para transformar a sua dor</span>
-              </li>
-            </ul>
+              <ul className="list-none space-y-4 pl-0">
+                <li className="flex items-start">
+                  <span className="text-foreground mr-3 flex-shrink-0">•</span>
+                  <span className="text-white">Sente que ninguém compreende a profundidade da sua dor</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-foreground mr-3 flex-shrink-0">•</span>
+                  <span className="text-white">Quer honrar as suas memórias</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-foreground mr-3 flex-shrink-0">•</span>
+                  <span className="text-white">Busca um caminho gentil para transformar a sua dor</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="flex flex-col items-center gap-6">
-              <TiltingBookCover />
-              <RainbowButton size="lg" asChild>
+          <div className="pt-12 pb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="flex flex-col items-center gap-6">
+                <TiltingBookCover />
+                <RainbowButton size="lg" asChild>
                 <Link href="https://hotmart.com/pt-br/marketplace/produtos/quando-um-amor-se-vai-compreendendo-e-acolhendo-o-luto-pela-perda-do-animal-de-estimacao/U102325292F" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                   <Image
                     src="/images/hotmart-flame-icon.svg"
@@ -90,6 +94,7 @@ export default function TutorsPage(): ReactElement {
                 e encontrar paz em meio à saudade — respeitando seu tempo e sua dor.
               </p>
             </div>
+          </div>
           </div>
         </div>
 

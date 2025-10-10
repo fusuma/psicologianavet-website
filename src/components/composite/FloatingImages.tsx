@@ -11,7 +11,6 @@ const TOY_IMAGES = [
   'cat.png',
   'cloud.png',
   'color-bone-2.png',
-  'color-bone.png',
   'dog.png',
   'fish.png',
   'fox.png',
