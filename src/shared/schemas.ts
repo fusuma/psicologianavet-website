@@ -9,12 +9,15 @@ export const subscriptionPayloadSchema = z.object({
   listName: z.enum(['tutors', 'vets']),
 
   // Clinic name - REQUIRED for vets, collected upfront for PDF personalization
-  clinicName: z.string()
-    .min(2, { message: "Nome da clínica deve ter pelo menos 2 caracteres." })
-    .max(100, { message: "Nome da clínica deve ter no máximo 100 caracteres." })
-    .regex(/^[a-zA-ZÀ-ÿ0-9\s\-'\.]+$/, { message: "Nome da clínica contém caracteres inválidos." })
-    .trim()
-    .optional(), // Optional in schema, but enforced via refine for vets
+  // Union type allows empty string (for tutors) or validated string (for vets)
+  clinicName: z.union([
+    z.literal(''), // Allow empty string for tutors
+    z.string()
+      .min(2, { message: "Nome da clínica deve ter pelo menos 2 caracteres." })
+      .max(100, { message: "Nome da clínica deve ter no máximo 100 caracteres." })
+      .regex(/^[a-zA-ZÀ-ÿ0-9\s\-'\.]+$/, { message: "Nome da clínica contém caracteres inválidos." })
+      .trim()
+  ]).optional(), // Optional in schema, but enforced via refine for vets
 
   // Multi-layer bot detection fields
   // Layer 1: Decoy fields (should remain empty)
